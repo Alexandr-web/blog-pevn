@@ -1,7 +1,13 @@
 <template>
-  <h1>Hello, world!</h1>
+  <div class="page">
+    <div class="container">
+      <h1>Hello, world!</h1>
+    </div>
+  </div>
 </template>
 
 <script>
-export default {};
+export default {
+  layout: "default",
+};
 </script>

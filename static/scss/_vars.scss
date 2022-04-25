@@ -23,5 +23,19 @@
   font-family: 'Roboto', sans-serif;
 }
 
+// Dark theme
 $darkTheme_backgroundPage: #23272e;
 $darkTheme_colorItems: #eaeaea;
+$darkTheme_backgroundHeader: rgba(35,39,46, .6);
+$darkTheme_colorHeaderLinks: #ffffff;
+$darkTheme_colorHeaderLogo: #ffffff;
+$darkTheme_backgroundAuthInput: #15181c;
+$darkTheme_colorAuthInput: #eaeaea;
+$darkTheme_backgroundAuthSubmit: linear-gradient(75deg, #f66e26, #9450a2);
+$darkTheme_colorAuthSubmit: #eaeaea;
+$darkTheme_colorAuthAdditionallyLink: #45bae1;
+
+// Other
+$minHeightHeader: 80px;
+$invalid: #e10000;
+$valid: #50c878;

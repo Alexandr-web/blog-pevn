@@ -1,5 +1,136 @@
 @import "./_global";
 
+.header {
+  background: $darkTheme_backgroundHeader;
+  padding: 10px 0;
+  min-height: $minHeightHeader;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+
+  &__logo {
+    text-transform: uppercase;
+    color: $darkTheme_colorHeaderLogo;
+    opacity: .8;
+    font-size: 30px;
+    transition: opacity, letter-spacing, .4s;
+
+    &:hover {
+      opacity: 1;
+      letter-spacing: 2px;
+    }
+  }
+
+  &__nav {
+    min-height: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__list {
+    display: flex;
+    align-items: center;
+    padding-left: 25px;
+
+    &-item {
+      &:not(:last-child) {
+        margin-right: 20px;
+      }
+    }
+
+    &-link {
+      color: $darkTheme_colorHeaderLinks;
+      @extend %raleway-500;
+    }
+  }
+}
+
+.auth {
+  height: 100vh;
+
+  &__inner {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__title {
+    @extend %raleway-500;
+    font-size: 35px;
+  }
+
+  &__additionally {
+    &-desc {
+      font-size: 15px;
+      @extend %raleway-300;
+    }
+
+    &-link {
+      color: $darkTheme_colorAuthAdditionallyLink;
+      @extend %raleway-500;
+    }
+  }
+
+  &__form {
+    padding: 35px 0;
+    width: 450px;
+    display: flex;
+    flex-direction: column;
+
+    &-field {
+      width: 100%;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    &-input {
+      width: 100%;
+      padding: 15px;
+      border-radius: 8px;
+      border: none;
+      background: $darkTheme_backgroundAuthInput;
+      color: $darkTheme_colorAuthInput;
+      @extend %ibm-plex-sans;
+    }
+
+    &-submit {
+      cursor: pointer;
+      border-radius: 8px;
+      padding: 12px 8px;
+      font-size: 18px;
+      border: none;
+      @extend %ibm-plex-sans;
+      width: 80%;
+      margin: 0 auto;
+      background: $darkTheme_backgroundAuthSubmit;
+      color: $darkTheme_colorAuthSubmit;
+    }
+
+    &-valid-field {
+      margin-left: 15px;
+      min-width: 15px;
+      min-height: 15px;
+      border-radius: 50%;
+      transition: background .4s;
+      background: $valid;
+
+      &--invalid {
+        background: $invalid;
+      }
+    }
+  }
+}
+
+.page {
+  padding-top: $minHeightHeader + 30px;
+}
 
 @import "./_supports";
 @import "./_media";
