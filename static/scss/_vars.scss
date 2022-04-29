@@ -13,7 +13,7 @@
   font-family: 'Raleway', sans-serif;
 }
 
-%ibm-plex-sans {
+%ibm-plex-sans-300 {
   font-weight: 300;
   font-family: 'IBM Plex Sans', sans-serif;
 }
@@ -28,12 +28,31 @@ $darkTheme_backgroundPage: #23272e;
 $darkTheme_colorItems: #eaeaea;
 $darkTheme_backgroundHeader: rgba(35,39,46, .6);
 $darkTheme_colorHeaderLinks: #ffffff;
+$darkTheme_colorHoverHeaderLinks: #318ce7;
 $darkTheme_colorHeaderLogo: #ffffff;
 $darkTheme_backgroundAuthInput: #15181c;
 $darkTheme_colorAuthInput: #eaeaea;
 $darkTheme_backgroundAuthSubmit: linear-gradient(75deg, #f66e26, #9450a2);
 $darkTheme_colorAuthSubmit: #eaeaea;
 $darkTheme_colorAuthAdditionallyLink: #45bae1;
+$darkTheme_backgroundAlert: rgba(21,24,28, .7);
+$darkTheme_colorAlertDesc: #ffffff;
+$darkTheme_colorAlertSuccess: #50c878;
+$darkTheme_colorAlertError: #bb3e3e;
+$darkTheme_colorAlertInfo: #318ce7;
+$darkTheme_colorAlertWarning: #ffdb00;
+$darkTheme_colorCreateBtn: #318ce7;
+$darkTheme_backgroundPost: #1e2227;
+$darkTheme_colorMessagePost: #c2c2c2;
+$darkTheme_borderColorPost: #4b5662;
+$darkTheme_colorDisabledLikePost: #c2c2c2;
+$darkTheme_backgroundLikePost: #101215;
+$darkTheme_backgroundLikeActivePost: #bb3e3e;
+$darkTheme_colorLikeActivePost: #ffffff;
+$darkTheme_backgroundCountLikePost: #ffffff;
+$darkTheme_colorCountLikePost: #bb3e3e;
+$darkTheme_backgroundEditPost: #318ce7;
+$darkTheme_colorEditPost: #ffffff;
 
 // Other
 $minHeightHeader: 80px;

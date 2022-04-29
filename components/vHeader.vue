@@ -9,8 +9,20 @@
             v-for="(item, index) in listLinks"
             :key="index"
           >
-            <nuxt-link class="header__list-link" :to="item.link">
+            <nuxt-link
+              class="header__list-link"
+              :to="item.link"
+              exact-active-class="active-link"
+            >
               {{ item.value }}
+            </nuxt-link>
+          </li>
+          <li class="header__list-item">
+            <nuxt-link
+              class="header__list-link header__list-create"
+              to="/create"
+            >
+              Создать
             </nuxt-link>
           </li>
         </ul>

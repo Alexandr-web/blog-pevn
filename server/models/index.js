@@ -23,17 +23,22 @@ const User = sequelize.define("user", {
 }, { tableName: "user" });
 
 const Post = sequelize.define("post", {
-  name: {
+  title: {
     type: DataTypes.STRING
   },
 
-  email: {
+  message: {
     type: DataTypes.STRING,
-    unique: true
   },
 
-  password: {
-    type: DataTypes.STRING
+  likes: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+
+  images: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    defaultValue: []
   },
 
   id: {
