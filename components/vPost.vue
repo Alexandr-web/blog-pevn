@@ -45,7 +45,11 @@
           Нравится
           <span class="post__like-count">{{ post.likes }}</span>
         </button>
-        <nuxt-link class="post__btn post__edit" :to="`/edit/${post.userId}`">
+        <nuxt-link
+          class="post__btn post__edit"
+          :to="`/edit/${post.userId}`"
+          v-if="isValidUser"
+        >
           Редактировать
         </nuxt-link>
       </div>
@@ -64,13 +68,19 @@ export default {
   data() {
     return {
       user: {},
+      isValidUser: false,
     };
   },
   async fetch() {
     try {
-      const data = await this.$store.dispatch("auth/getUser");
+      const userOfPost = await this.$store.dispatch(
+        "auth/getUser",
+        this.post.userId
+      );
+      const currentUser = await this.$store.dispatch("auth/getUser");
 
-      this.user = data.dataValues;
+      this.isValidUser = currentUser.dataValues.id === userOfPost.user.id;
+      this.user = userOfPost.user;
     } catch (err) {
       throw err;
     }
@@ -89,9 +99,6 @@ export default {
         date.getMinutes() >= 9 ? date.getMinutes() : "0" + date.getMinutes()
       }`;
     },
-  },
-  mounted() {
-    console.log(this.post);
   },
 };
 </script>

@@ -168,6 +168,13 @@
     margin-bottom: 50px;
   }
 
+  &__image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $darkTheme_backgroundBlockImagePost;
+  }
+
   &__images {
     display: grid;
     grid-template-columns: 1fr;

@@ -92,11 +92,26 @@ export default {
       }
     },
 
-    getUser() {
-      const cookieStr = process.browser ? document.cookie : this.app.context.req.headers.cookie || "";
-      const findToken = Cookie.parse(cookieStr);
+    async getUser({ }, id) {
+      try {
+        if (!id) {
+          const cookieStr = process.browser ? document.cookie : this.app.context.req.headers.cookie || "";
+          const findToken = Cookie.parse(cookieStr);
 
-      return findToken ? jwtDecode(findToken.token) || {} : {};
+          return findToken ? jwtDecode(findToken.token) || {} : {};
+        }
+
+        const res = await fetch(`${host}/auth/user/${id}`, {
+          method: "GET",
+          headers: {
+            "Accept-Type": "application/json"
+          }
+        });
+
+        return res.json();
+      } catch (err) {
+        throw err;
+      }
     }
   }
 }
