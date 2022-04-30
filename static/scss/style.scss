@@ -179,7 +179,6 @@
     display: grid;
     grid-template-columns: 1fr;
     grid-gap: 10px;
-    padding-bottom: 16px;
 
     &--even {
       grid-template-columns: repeat(2, 1fr);
@@ -212,6 +211,7 @@
     line-height: 25px;
     font-size: 18px;
     color: $darkTheme_colorMessagePost;
+    padding-top: 25px;
   }
 
   &__user-name {
@@ -393,6 +393,163 @@
 
   &:not(:last-child) {
     margin-bottom: 15px;
+  }
+}
+
+.form-create {
+  display: flex;
+  flex-direction: column;
+  width: 800px;
+  margin: 0 auto;
+
+  &__files {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    
+    &-item {
+      background-color: #000000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    &-name {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      z-index: 999;
+      background: $darkTheme_backgroundAreaFileName;
+      padding: 10px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      word-break: break-word;
+      font-size: 12px;
+    }
+
+    &-remove {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 9999;
+      border: none;
+      cursor: pointer;
+      background: $darkTheme_backgroundRemoveButton;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 15px;
+      height: 15px;
+      border-radius: 10px;
+
+      &::before,
+      &::after {
+        content: "";
+        position: absolute;
+        background: $darkTheme_colorRemoveButton;
+        width: 60%;
+        height: 1px;
+      }
+
+      &::after {
+        transform: rotateZ(45deg);
+      }
+
+      &::before {
+        transform: rotateZ(-45deg);
+      }
+    }
+
+    &-image {
+      max-width: 120px;
+    }
+  }
+
+  &__field {
+    &-center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &-column-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 15px;
+    }
+  }
+
+  &__area-file {
+    display: flex;
+    align-items: center;
+    border: 2px dashed $darkTheme_borderColorAreaFile;
+    padding: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+
+    &--success {
+      border-color: $darkTheme_borderColorSuccessFile;
+
+      & > span {
+        color: $darkTheme_colorSuccessFile;
+      }
+    }
+  }
+
+  &__check-mark {
+    margin-left: 10px;
+  }
+
+  &__file-text {
+    color: $darkTheme_colorDisabledFile;
+    font-size: 18px;
+    @extend %ibm-plex-sans-300;
+  }
+
+  &__input {
+    border: none;
+    padding: 19px;
+    font-size: 19px;
+    border-radius: 8px;
+    width: 100%;
+    background: $darkTheme_backgroundInputFormCreate;
+    color: $darkTheme_colorInputFormCreate;
+    transition: box-shadow .4s;
+    @extend %ibm-plex-sans-300;
+
+    &::placeholder {
+      color: $darkTheme_colorPlaceholderInputFormCreate;
+    }
+
+    &:focus {
+      box-shadow: $darkTheme_boxShadowActiveInput;
+    }
+
+    &-file {
+      display: none;
+    }
+
+    &-message {
+      resize: vertical;
+      min-height: 120px;
+    }
+  }
+
+  &__submit {
+    cursor: pointer;
+    border: none;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 18px;
+    background: $darkTheme_backgroundSubmitFromCreate;
+    color: $darkTheme_colorSubmitFromCreate;
   }
 }
 

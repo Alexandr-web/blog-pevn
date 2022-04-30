@@ -28,9 +28,9 @@ class Post {
 
         await ModelPost.create(dataPost);
 
-        return res.status(200).json({ ok: true, message: "Пост создан" });
+        return res.status(200).json({ ok: true, message: "Пост создан", status: 200 });
       } else {
-        return res.status(403).json({ ok: true, message: "Для выполнения данной операции вам необходимо авторизоваться" });
+        return res.status(403).json({ ok: true, message: "Для выполнения данной операции вам необходимо авторизоваться", status: 403 });
       }
     } catch (err) {
       console.log(err);

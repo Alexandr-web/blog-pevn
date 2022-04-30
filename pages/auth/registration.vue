@@ -117,6 +117,8 @@ export default {
                 title: "Успешно",
                 desc: message,
               });
+
+              this.$router.push("/");
             } else {
               this.alerts.push({
                 type: "error",

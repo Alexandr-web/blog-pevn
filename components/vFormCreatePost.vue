@@ -14,23 +14,54 @@
       />
     </div>
     <div class="form-create__field">
-      <label class="form-create__label" for="images">
+      <textarea
+        v-model="message"
+        placeholder="Описание"
+        class="form-create__input form-create__input-message"
+      ></textarea>
+    </div>
+    <div class="form-create__field form-create__field-column-center">
+      <label
+        class="form-create__area-file"
+        for="images"
+        :class="{ 'form-create__area-file--success': files.length }"
+      >
         <input
           id="images"
-          class="form-create__input form-create__input-file"
+          class="form-create__input-file"
           type="file"
           accept="image/jpeg,image/png,image/gif"
           multiple
           @change="setFiles($event)"
         />
-        <span class="form-create__file-text">Загрузить изображение</span>
+        <span class="form-create__file-text">{{ textAreaFile }}</span>
+        <img
+          class="form-create__check-mark"
+          :src="require('@/static/icons/check.svg')"
+          alt=""
+          v-if="files.length"
+        />
       </label>
+      <ul class="form-create__files" v-if="files.length">
+        <li
+          v-for="(file, index) in files"
+          :key="index"
+          class="form-create__files-item"
+        >
+          <img class="form-create__files-image" :src="file.src" alt="" />
+          <div class="form-create__files-name" :title="file.file.name">
+            {{ file.file.name }}
+          </div>
+          <button
+            class="form-create__files-remove"
+            type="button"
+            @click="removeFile(index)"
+          ></button>
+        </li>
+      </ul>
     </div>
-    <div class="form-create__field">
-      <textarea
-        v-model="message"
-        class="form-create__input form-create__input-message"
-      ></textarea>
+    <div class="form-create__field form-create__field-center">
+      <button class="form-create__submit" type="submit">Создать</button>
     </div>
   </form>
 </template>
@@ -42,6 +73,7 @@ export default {
       title: "",
       files: [],
       message: "",
+      textAreaFile: "Загрузить изображение",
     };
   },
   methods: {
@@ -64,6 +96,8 @@ export default {
                 ...image,
                 src: reader.result,
               });
+
+              this.textAreaFile = `Загруженных файлов: ${this.files.length}`;
             });
             reader.addEventListener("error", () => {
               this.$emit("setAlert", {
@@ -84,7 +118,14 @@ export default {
           title: "Ошибка",
           desc: "Ваш браузер устарел и не поддерживает FileReader, пожалуйста установите современный и повторите попытку",
         });
+
+        this.textAreaFile = "Повторите попытку";
       }
+    },
+
+    removeFile(index) {
+      this.files = this.files.filter((file, idx) => idx !== index);
+      this.textAreaFile = `Загруженных файлов: ${this.files.length}`;
     },
   },
 };

@@ -55,8 +55,24 @@ export default {
           this.pending = true;
 
           res
-            .then(({ ok }) => {
-              console.log(ok);
+            .then(({ ok, status }) => {
+              if (ok) {
+                if (![400, 500, 404, 403].includes(status)) {
+                  this.alerts.push({
+                    type: "success",
+                    title: "Успешно",
+                    desc: message,
+                  });
+
+                  this.$router.push("/");
+                } else {
+                  this.alerts.push({
+                    type: "error",
+                    title: "Ошибка",
+                    desc: message,
+                  });
+                }
+              }
             })
             .catch((err) => {
               throw err;

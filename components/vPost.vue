@@ -26,15 +26,8 @@
             post.images.length > 1 && post.images.length % 2 !== 0,
         }"
       >
-        <li
-          class="post__image"
-          v-for="(image, index) in post.images"
-          :key="index"
-        >
-          <img
-            class="post__image-item"
-            :src="require(`@/postsImages/${image}`)"
-          />
+        <li class="post__image" v-for="(image, index) in images" :key="index">
+          <img class="post__image-item" :src="image" />
         </li>
       </ul>
       <p class="post__message" v-if="post.message">{{ post.message }}</p>
@@ -69,6 +62,7 @@ export default {
     return {
       user: {},
       isValidUser: false,
+      images: [],
     };
   },
   async fetch() {
@@ -79,6 +73,14 @@ export default {
       );
       const currentUser = await this.$store.dispatch("auth/getUser");
 
+      this.post.images.map((image) => {
+        this.getValidURL(image)
+          .then((res) => this.images.push(res))
+          .catch((err) => {
+            throw err;
+          });
+      });
+
       this.isValidUser = currentUser.dataValues.id === userOfPost.user.id;
       this.user = userOfPost.user;
     } catch (err) {
@@ -86,6 +88,11 @@ export default {
     }
   },
   methods: {
+    async getValidURL(image) {
+      const url = await require(`@/postsImages/${image}`);
+
+      return /^\/\_nuxt\//.test(url) ? url : "";
+    },
     getValidDate(dateStr) {
       const date = new Date(dateStr);
 
