@@ -1,7 +1,12 @@
 <template>
   <div class="wall">
     <ul class="posts" v-if="posts.length">
-      <vPost v-for="(post, index) in posts" :key="index" :post="post" />
+      <vPost
+        v-for="(post, index) in posts"
+        :key="index"
+        :post="post"
+        @like="like"
+      />
     </ul>
   </div>
 </template>
@@ -26,6 +31,28 @@ export default {
     } catch (err) {
       throw err;
     }
+  },
+  methods: {
+    async like(postId) {
+      try {
+        const token = this.$store.getters["auth/getToken"];
+        const user = await this.$store.dispatch("auth/getUser");
+        const res = await this.$store.dispatch("post/like", {
+          fd: { postId, userId: user.dataValues.id },
+          token,
+        });
+
+        this.posts = this.posts.map((post) => {
+          if (post.id === postId) {
+            post.likes = res.likes;
+          }
+
+          return post;
+        });
+      } catch (err) {
+        throw err;
+      }
+    },
   },
 };
 </script>

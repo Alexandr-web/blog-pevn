@@ -34,9 +34,13 @@
     </main>
     <footer class="post__footer">
       <div class="post__controls">
-        <button class="post__btn post__like">
+        <button
+          class="post__btn post__like"
+          :class="{ 'active-like': isCurrentUserLike(post.likes) }"
+          @click="$emit('like', post.id)"
+        >
           Нравится
-          <span class="post__like-count">{{ post.likes }}</span>
+          <span class="post__like-count">{{ post.likes.length }}</span>
         </button>
         <nuxt-link
           class="post__btn post__edit"
@@ -61,6 +65,7 @@ export default {
   data() {
     return {
       user: {},
+      currentUser: {},
       isValidUser: false,
       images: [],
     };
@@ -83,6 +88,7 @@ export default {
 
       this.isValidUser = currentUser.dataValues.id === userOfPost.user.id;
       this.user = userOfPost.user;
+      this.currentUser = currentUser.dataValues;
     } catch (err) {
       throw err;
     }
@@ -105,6 +111,9 @@ export default {
       ${date.getHours() >= 9 ? date.getHours() : "0" + date.getHours()}:${
         date.getMinutes() >= 9 ? date.getMinutes() : "0" + date.getMinutes()
       }`;
+    },
+    isCurrentUserLike(likes) {
+      return likes.findIndex((id) => this.currentUser.id === id) !== -1;
     },
   },
 };

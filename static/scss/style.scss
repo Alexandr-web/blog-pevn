@@ -250,8 +250,6 @@
       display: inline-block;
       padding: 3px;
       border-radius: 8px;
-      background: $darkTheme_backgroundCountLikePost;
-      color: $darkTheme_colorCountLikePost;
       font-size: 13px;
     }
   }
@@ -561,6 +559,11 @@
   background: $darkTheme_backgroundLikeActivePost;
   color: $darkTheme_colorLikeActivePost;
   opacity: 1;
+
+  & > span {
+    background: $darkTheme_backgroundCountLikePost;
+    color: $darkTheme_colorCountLikePost;
+  }
 }
 
 @keyframes showTop {

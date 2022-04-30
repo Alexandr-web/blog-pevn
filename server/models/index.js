@@ -32,8 +32,8 @@ const Post = sequelize.define("post", {
   },
 
   likes: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0
+    type: DataTypes.ARRAY(DataTypes.INTEGER),
+    defaultValue: []
   },
 
   images: {
