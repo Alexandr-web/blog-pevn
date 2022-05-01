@@ -23,7 +23,7 @@ export default {
           method: "POST",
           headers: {
             "Accept-Type": "application/json",
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token || ""}`
           },
           body: fd
         });
@@ -41,7 +41,7 @@ export default {
           headers: {
             "Content-Type": "application/json",
             "Accept-Type": "application/json",
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token || ""}`
           },
           body: JSON.stringify(fd)
         });

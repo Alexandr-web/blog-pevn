@@ -5,7 +5,7 @@
         <div class="post__user-image-block">
           <img
             class="post__user-image"
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4dl15Q34O71yXw6fdqw312PJ5jGMbPE65_tE3jU8e57jW2-knKIm6ESchWhLoMOJhMLc&usqp=CAU"
+            :src="user.avatar"
             alt="Изображение пользователя"
           />
         </div>
@@ -55,6 +55,8 @@
 </template>
 
 <script>
+import getValidURLImageForAvatar from "@/getValidURLImageForAvatar/index";
+
 export default {
   props: {
     post: {
@@ -79,7 +81,7 @@ export default {
       const currentUser = await this.$store.dispatch("auth/getUser");
 
       this.post.images.map((image) => {
-        this.getValidURL(image)
+        this.getValidURLImageForPost(image)
           .then((res) => this.images.push(res))
           .catch((err) => {
             throw err;
@@ -87,14 +89,17 @@ export default {
       });
 
       this.isValidUser = currentUser.dataValues.id === userOfPost.user.id;
-      this.user = userOfPost.user;
+      this.user = {
+        ...userOfPost.user,
+        avatar: await getValidURLImageForAvatar(userOfPost.user.avatar),
+      };
       this.currentUser = currentUser.dataValues;
     } catch (err) {
       throw err;
     }
   },
   methods: {
-    async getValidURL(image) {
+    async getValidURLImageForPost(image) {
       const url = await require(`@/postsImages/${image}`);
 
       return /^\/\_nuxt\//.test(url) ? url : "";
@@ -103,11 +108,7 @@ export default {
       const date = new Date(dateStr);
 
       return `
-      ${date.getDate() >= 9 ? date.getDate() : "0" + date.getDate()}.${
-        date.getMonth() + 1 >= 9
-          ? date.getMonth() + 1
-          : "0" + (date.getMonth() + 1)
-      }.${date.getFullYear()}, 
+      ${date.toLocaleDateString()}, 
       ${date.getHours() >= 9 ? date.getHours() : "0" + date.getHours()}:${
         date.getMinutes() >= 9 ? date.getMinutes() : "0" + date.getMinutes()
       }`;

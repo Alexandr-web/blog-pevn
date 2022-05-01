@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const sequelize = require("./db");
 const authRouter = require("./routes/auth.router");
 const postRouter = require("./routes/post.router");
+const userRouter = require("./routes/user.router");
 
 require("dotenv").config();
 require("./models/index");
@@ -26,5 +27,6 @@ connectToDatabase();
 
 app.use("/auth", authRouter);
 app.use("/post", postRouter);
+app.use("/user", userRouter);
 
 module.exports = app;

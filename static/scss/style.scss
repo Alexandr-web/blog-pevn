@@ -179,6 +179,7 @@
     display: grid;
     grid-template-columns: 1fr;
     grid-gap: 10px;
+    padding-top: 10px;
 
     &--even {
       grid-template-columns: repeat(2, 1fr);
@@ -201,7 +202,6 @@
   }
 
   &__title {
-    padding-bottom: 10px;
     @extend %raleway-500;
     font-size: 27px;
     line-height: 35px;
@@ -212,16 +212,6 @@
     font-size: 18px;
     color: $darkTheme_colorMessagePost;
     padding-top: 25px;
-  }
-
-  &__user-name {
-    padding-left: 10px;
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    word-break: break-word;
-    @extend %ibm-plex-sans-300;
   }
 
   &__header {
@@ -254,14 +244,31 @@
     }
   }
 
-  &__user-image-block {
-    background-color: #000000;
-    max-width: 40px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+  &__user {
+    &-image {
+      width: 40px;
+      height: 40px;
+    }
+
+    &-image-block {
+      background-color: #000000;
+      max-width: 40px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    &-name {
+      padding-left: 10px;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      word-break: break-word;
+      @extend %ibm-plex-sans-300;
+    }
   }
 
   &__main {
@@ -551,6 +558,205 @@
   }
 }
 
+.user-page {
+  display: flex;
+  flex-direction: column;
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__navbar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 0;
+
+    &-list {
+      display: flex;
+      align-items: center;
+
+      &-link {
+        @extend %raleway-500;
+        font-size: 18px;
+        color: $darkTheme_colorLinksNavbarUserPage;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+
+        &::after {
+          content: "";
+          position: absolute;
+          bottom: 0;
+          width: 100%;
+          height: 1px;
+        }
+      }
+    }
+  }
+
+  &__info {
+    background: $darkTheme_backgroundHeaderUserPage;
+    padding: 25px;
+    border-radius: 0 0 12px 12px;
+    display: flex;
+    align-items: center;
+
+    &-avatar {
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #000000;
+      max-width: 120px;
+      margin-right: 25px;
+
+      &-image {
+        width: 120px;
+        height: 120px;
+      }
+    }
+
+    &-name {
+      @extend %ibm-plex-sans-300;
+      font-size: 28px;
+    }
+
+    &-email {
+      @extend %roboto-300;
+      font-size: 20px;
+      opacity: .6;
+      padding-top: 6px;
+    }
+  }
+}
+
+.user-info {
+  width: 800px;
+  margin: 0 auto;
+
+  &__columns {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__col {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+
+    &:nth-child(even) {
+      background: $darkTheme_backgroundEvenColUserInfo;
+    }
+  }
+
+  &__title {
+    padding-right: 10px;
+  }
+
+  &__desc {
+    color: $darkTheme_colorDescColUserInfo;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+  }
+
+  &__title,
+  &__desc {
+    @extend %roboto-300;
+    font-size: 16px;
+  }
+}
+
+.user-form {
+  width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+
+  &__area-file {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    border-radius: 12px;
+    border: 2px dashed $darkTheme_borderColorAreaFile;
+    cursor: pointer;
+
+    &--success {
+      border-color: $darkTheme_borderColorSuccessFile;
+
+      & > span {
+        color: $darkTheme_colorSuccessFile;
+      }
+    }
+  }
+
+  &__file {
+    display: none;
+
+    &-text {
+      color: $darkTheme_colorDisabledFile;
+    }
+  }
+  
+  &__field {
+    display: flex;
+    flex-direction: column;
+
+    &-center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 15px;
+    }
+
+    &-title {
+      font-size: 16px;
+      padding-bottom: 10px;
+      @extend %roboto-300;
+    }
+  }
+
+  &__input {
+    border-radius: 8px;
+    border: none;
+    background: $darkTheme_backgroundInputSettingsUser;
+    color: $darkTheme_colorInputSettingsUser;
+    padding: 15px;
+    @extend %ibm-plex-sans-300;
+    transition: background .4s;
+
+    &:focus {
+      background: $darkTheme_backgroundFocusInputSettingsUser;
+    }
+
+    &::placeholder {
+      color: $darkTheme_colorPlaceholderInputSettingsUser;
+    }
+  }
+
+  &__submit {
+    cursor: pointer;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    background: $darkTheme_backgroundSubmitSettingsUser;
+    color: $darkTheme_colorSubmitSettingsUser;
+  }
+}
+
 .active-link {
   color: $darkTheme_colorHoverHeaderLinks;
 }
@@ -563,6 +769,14 @@
   & > span {
     background: $darkTheme_backgroundCountLikePost;
     color: $darkTheme_colorCountLikePost;
+  }
+}
+
+.active-user-link {
+  color: $darkTheme_colorActiveLinksNavbarUserPage;
+
+  &::after {
+    background: $darkTheme_backgroundActiveLinksNavbarUserPage;
   }
 }
 

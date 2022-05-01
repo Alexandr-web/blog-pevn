@@ -4,17 +4,22 @@
       <nav class="header__nav">
         <nuxt-link class="header__logo" to="/">BlogPevn</nuxt-link>
         <ul class="header__list">
-          <li
-            class="header__list-item"
-            v-for="(item, index) in listLinks"
-            :key="index"
-          >
+          <li class="header__list-item">
             <nuxt-link
               class="header__list-link"
-              :to="item.link"
+              to="/"
               exact-active-class="active-link"
             >
-              {{ item.value }}
+              Главная
+            </nuxt-link>
+          </li>
+          <li class="header__list-item">
+            <nuxt-link
+              class="header__list-link"
+              :to="`/profile/${userId}`"
+              active-class="active-link"
+            >
+              Профиль
             </nuxt-link>
           </li>
           <li class="header__list-item">
@@ -35,12 +40,17 @@
 export default {
   data() {
     return {
-      listLinks: [
-        { link: "/", value: "Главная" },
-        { link: "/profile", value: "Профиль" },
-        { link: "/settings", value: "Настройки" },
-      ],
+      userId: null,
     };
+  },
+  async fetch() {
+    try {
+      const currentUser = await this.$store.dispatch("auth/getUser");
+
+      this.userId = currentUser.dataValues.id;
+    } catch (err) {
+      throw err;
+    }
   },
 };
 </script>

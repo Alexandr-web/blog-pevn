@@ -5,7 +5,7 @@ class Post {
     try {
       const posts = await ModelPost.findAll();
 
-      return res.status(200).json({ ok: true, posts });
+      return res.status(200).json({ ok: true, posts: posts || [] });
     } catch (err) {
       console.log(err);
 

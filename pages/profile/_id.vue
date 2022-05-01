@@ -1,0 +1,130 @@
+<template>
+  <div class="page">
+    <div class="container">
+      <ul class="alerts">
+        <vAlert
+          v-for="(alert, index) in alerts"
+          :key="index"
+          :type="alert.type"
+          :title="alert.title"
+          :desc="alert.desc"
+        />
+      </ul>
+      <div class="user-page">
+        <header class="user-page__header">
+          <div class="user-page__info">
+            <div class="user-page__info-avatar">
+              <img
+                class="user-page__info-avatar-image"
+                :src="user.avatar"
+                alt=""
+              />
+            </div>
+            <div class="user-page__info-person">
+              <h2 class="user-page__info-name">{{ user.name }}</h2>
+              <h3 class="user-page__info-email">{{ user.email }}</h3>
+            </div>
+          </div>
+          <nav class="user-page__navbar">
+            <ul class="user-page__navbar-list">
+              <li class="user-page__navbar-list-item">
+                <nuxt-link
+                  class="user-page__navbar-list-link"
+                  :to="`/profile/${user.id}?tab=info`"
+                  exact-active-class="active-user-link"
+                >
+                  Личная информация
+                </nuxt-link>
+              </li>
+              <li class="user-page__navbar-list-item">
+                <nuxt-link
+                  class="user-page__navbar-list-link"
+                  :to="`/profile/${user.id}?tab=settings`"
+                  exact-active-class="active-user-link"
+                >
+                  Настройки
+                </nuxt-link>
+              </li>
+              <li class="user-page__navbar-list-item">
+                <nuxt-link
+                  class="user-page__navbar-list-link"
+                  :to="`/profile/${user.id}?tab=delete`"
+                  exact-active-class="active-user-link"
+                >
+                  Удаление аккаунта
+                </nuxt-link>
+              </li>
+            </ul>
+          </nav>
+        </header>
+        <main class="user-page__main">
+          <vUserInfo v-if="tab === 'info'" :user="user" />
+          <vUserSettings
+            v-if="tab === 'settings'"
+            :user="user"
+            @setAlert="setAlert"
+          />
+        </main>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import vUserInfo from "@/components/vUserInfo";
+import vUserSettings from "@/components/vUserSettings";
+import vAlert from "@/components/vAlert";
+import getValidURLImageForAvatar from "@/getValidURLImageForAvatar/index";
+
+export default {
+  watchQuery: ["tab"],
+  middleware: "checkAuth",
+  layout: "default",
+  data() {
+    return {
+      alerts: [],
+    };
+  },
+  async asyncData({ params: { id }, query: { tab }, store }) {
+    try {
+      const candidate = await store.dispatch("auth/getUser", id);
+
+      return {
+        tab,
+        user: candidate.ok
+          ? {
+              ...candidate.user,
+              avatar: await getValidURLImageForAvatar(candidate.user.avatar),
+            }
+          : {},
+      };
+    } catch (err) {
+      throw err;
+    }
+  },
+  validate({ params, store }) {
+    const getCandidate = store.dispatch("auth/getUser", params.id);
+
+    return getCandidate
+      .then(({ user }) => Boolean(Object.keys(user).length))
+      .catch((err) => {
+        throw err;
+      });
+  },
+  mounted() {
+    if (!this.$route.query.tab) {
+      this.$router.push("?tab=info");
+    }
+  },
+  methods: {
+    setAlert(options) {
+      this.alerts.push(options);
+    },
+  },
+  components: {
+    vUserInfo,
+    vUserSettings,
+    vAlert,
+  },
+};
+</script>

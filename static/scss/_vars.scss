@@ -23,6 +23,11 @@
   font-family: 'Roboto', sans-serif;
 }
 
+%roboto-300 {
+  font-weight: 300;
+  font-family: 'Roboto', sans-serif;
+}
+
 // Dark theme
 $darkTheme_backgroundPage: #23272e;
 $darkTheme_colorItems: #eaeaea;
@@ -67,6 +72,18 @@ $darkTheme_colorSubmitFromCreate: #ffffff;
 $darkTheme_backgroundRemoveButton: #000000;
 $darkTheme_colorRemoveButton: #ffffff;
 $darkTheme_backgroundAreaFileName: rgba(0, 0, 0, .6);
+$darkTheme_backgroundHeaderUserPage: linear-gradient(to bottom, transparent, #17191e);
+$darkTheme_colorLinksNavbarUserPage: #c2c2c2;
+$darkTheme_backgroundActiveLinksNavbarUserPage: #318ce7;
+$darkTheme_colorActiveLinksNavbarUserPage: #ffffff;
+$darkTheme_backgroundEvenColUserInfo: #383f49;
+$darkTheme_colorDescColUserInfo: #318ce7;
+$darkTheme_backgroundInputSettingsUser: #383f49;
+$darkTheme_colorInputSettingsUser: #ffffff;
+$darkTheme_colorPlaceholderInputSettingsUser: #c2c2c2;
+$darkTheme_backgroundFocusInputSettingsUser: #343a44;
+$darkTheme_backgroundSubmitSettingsUser: #50c878;
+$darkTheme_colorSubmitSettingsUser: #ffffff;
 
 // Other
 $minHeightHeader: 80px;

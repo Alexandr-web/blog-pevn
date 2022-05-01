@@ -26,7 +26,6 @@ export default {
   data() {
     return {
       alerts: [],
-      pending: false,
     };
   },
   components: {
@@ -37,56 +36,46 @@ export default {
     setAlert(options) {
       this.alerts.push(options);
     },
-    createPost({ title, message, files }) {
-      const fd = new FormData();
-      const token = this.$store.getters["auth/getToken"];
+    async createPost({ title, message, files }) {
+      try {
+        const fd = new FormData();
+        const token = this.$store.getters["auth/getToken"];
+        const user = await this.$store.dispatch("auth/getUser");
 
-      this.$store
-        .dispatch("auth/getUser")
-        .then((user) => {
-          fd.append("userId", user.dataValues.id);
-          fd.append("title", title);
-          fd.append("message", message);
+        fd.append("userId", user.dataValues.id);
+        fd.append("title", title);
+        fd.append("message", message);
 
-          files.map((image) => fd.append("files", image.file));
+        files.map((image) => fd.append("files", image.file));
 
-          const res = this.$store.dispatch("post/create", { fd, token });
+        const res = await this.$store.dispatch("post/create", { fd, token });
 
-          this.pending = true;
-
-          res
-            .then(({ ok, status }) => {
-              if (ok) {
-                if (![400, 500, 404, 403].includes(status)) {
-                  this.alerts.push({
-                    type: "success",
-                    title: "Успешно",
-                    desc: message,
-                  });
-
-                  this.$router.push("/");
-                } else {
-                  this.alerts.push({
-                    type: "error",
-                    title: "Ошибка",
-                    desc: message,
-                  });
-                }
-              }
-            })
-            .catch((err) => {
-              throw err;
+        if (res.ok) {
+          if (![400, 500, 404, 403].includes(res.status)) {
+            this.alerts.push({
+              type: "success",
+              title: "Успешно",
+              desc: res.message,
             });
-        })
-        .catch((err) => {
-          this.alerts.push({
-            title: "Ошибка",
-            type: "error",
-            desc: `Произошла ошибка сервера: ${err}`,
-          });
 
-          throw err;
+            this.$router.push("/");
+          } else {
+            this.alerts.push({
+              type: "error",
+              title: "Ошибка",
+              desc: res.message,
+            });
+          }
+        }
+      } catch (err) {
+        this.alerts.push({
+          title: "Ошибка",
+          type: "error",
+          desc: `Произошла ошибка сервера: ${err}`,
         });
+
+        throw err;
+      }
     },
   },
 };

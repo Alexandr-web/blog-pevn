@@ -11,6 +11,11 @@ const User = sequelize.define("user", {
     unique: true
   },
 
+  avatar: {
+    type: DataTypes.STRING,
+    defaultValue: "user.png"
+  },
+
   password: {
     type: DataTypes.STRING
   },
