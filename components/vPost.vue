@@ -88,12 +88,12 @@ export default {
           });
       });
 
-      this.isValidUser = currentUser.dataValues.id === userOfPost.user.id;
+      this.isValidUser = currentUser.user.id === userOfPost.user.id;
       this.user = {
         ...userOfPost.user,
         avatar: await getValidURLImageForAvatar(userOfPost.user.avatar),
       };
-      this.currentUser = currentUser.dataValues;
+      this.currentUser = currentUser.user;
     } catch (err) {
       throw err;
     }

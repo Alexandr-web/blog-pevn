@@ -72,7 +72,7 @@ export default {
       };
 
       if (!Object.values(fd).every(Boolean)) {
-        this.alerts.push({
+        this.alerts.unshift({
           type: "warning",
           title: "Внимание",
           desc: "Все поля формы должны быть заполнены",
@@ -86,25 +86,23 @@ export default {
       this.pending = true;
 
       res
-        .then(({ ok, message, status }) => {
+        .then(({ message, status }) => {
           this.pending = false;
 
-          if (ok) {
-            if (![400, 500, 404].includes(status)) {
-              this.alerts.push({
-                type: "success",
-                title: "Успешно",
-                desc: message,
-              });
+          if (![400, 500, 404].includes(status)) {
+            this.alerts.unshift({
+              type: "success",
+              title: "Успешно",
+              desc: message,
+            });
 
-              this.$router.push("/");
-            } else {
-              this.alerts.push({
-                type: "error",
-                title: "Ошибка",
-                desc: message,
-              });
-            }
+            this.$router.push("/");
+          } else {
+            this.alerts.unshift({
+              type: "error",
+              title: "Ошибка",
+              desc: message,
+            });
           }
         })
         .catch((err) => {

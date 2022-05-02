@@ -15,5 +15,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.post("/update", isAuth, upload.single("avatar"), userController.update);
+router.delete("/delete", isAuth, userController.deleteAccount);
 
 module.exports = router;

@@ -17,6 +17,23 @@ export default {
       } catch (err) {
         throw err;
       }
+    },
+    async deleteAccount({ }, { fd, token }) {
+      try {
+        const res = await fetch(`${host}/user/delete`, {
+          method: "DELETE",
+          headers: {
+            "Accept-Type": "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token || ""}`
+          },
+          body: JSON.stringify(fd)
+        });
+
+        return res.json();
+      } catch (err) {
+        throw err;
+      }
     }
   }
 }

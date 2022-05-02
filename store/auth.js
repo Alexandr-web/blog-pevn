@@ -94,21 +94,30 @@ export default {
 
     async getUser({ }, id) {
       try {
-        if (!id) {
-          const cookieStr = process.browser ? document.cookie : this.app.context.req.headers.cookie || "";
-          const findToken = Cookie.parse(cookieStr);
+        const sendReq = async currentId => {
+          const res = await fetch(`${host}/auth/user/${currentId}`, {
+            method: "GET",
+            headers: {
+              "Accept-Type": "application/json"
+            }
+          });
 
-          return findToken ? jwtDecode(findToken.token) || {} : {};
+          return res.json();
         }
 
-        const res = await fetch(`${host}/auth/user/${id}`, {
-          method: "GET",
-          headers: {
-            "Accept-Type": "application/json"
-          }
-        });
+        if (id) {
+          return sendReq(id);
+        } else {
+          const cookieStr = process.browser ? document.cookie : this.app.context.req.headers.cookie || "";
+          const findToken = Cookie.parse(cookieStr);
+          const res = findToken ? jwtDecode(findToken.token) || {} : {};
 
-        return res.json();
+          if (Object.keys(res).length) {
+            return sendReq(res.dataValues.id);
+          } else {
+            return {};
+          }
+        }
       } catch (err) {
         throw err;
       }

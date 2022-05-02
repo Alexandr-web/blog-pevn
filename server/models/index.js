@@ -12,12 +12,12 @@ const User = sequelize.define("user", {
   },
 
   avatar: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     defaultValue: "user.png"
   },
 
   password: {
-    type: DataTypes.STRING
+    type: DataTypes.TEXT
   },
 
   id: {
@@ -29,11 +29,11 @@ const User = sequelize.define("user", {
 
 const Post = sequelize.define("post", {
   title: {
-    type: DataTypes.STRING
+    type: DataTypes.TEXT
   },
 
   message: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
   },
 
   likes: {
@@ -42,7 +42,7 @@ const Post = sequelize.define("post", {
   },
 
   images: {
-    type: DataTypes.ARRAY(DataTypes.STRING),
+    type: DataTypes.ARRAY(DataTypes.TEXT),
     defaultValue: []
   },
 

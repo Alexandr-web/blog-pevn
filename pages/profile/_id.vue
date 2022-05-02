@@ -25,7 +25,7 @@
               <h3 class="user-page__info-email">{{ user.email }}</h3>
             </div>
           </div>
-          <nav class="user-page__navbar">
+          <nav class="user-page__navbar" v-if="isCurrentUser">
             <ul class="user-page__navbar-list">
               <li class="user-page__navbar-list-item">
                 <nuxt-link
@@ -36,7 +36,7 @@
                   Личная информация
                 </nuxt-link>
               </li>
-              <li class="user-page__navbar-list-item">
+              <li class="user-page__navbar-list-item" v-if="isCurrentUser">
                 <nuxt-link
                   class="user-page__navbar-list-link"
                   :to="`/profile/${user.id}?tab=settings`"
@@ -45,7 +45,7 @@
                   Настройки
                 </nuxt-link>
               </li>
-              <li class="user-page__navbar-list-item">
+              <li class="user-page__navbar-list-item" v-if="isCurrentUser">
                 <nuxt-link
                   class="user-page__navbar-list-link"
                   :to="`/profile/${user.id}?tab=delete`"
@@ -60,9 +60,13 @@
         <main class="user-page__main">
           <vUserInfo v-if="tab === 'info'" :user="user" />
           <vUserSettings
-            v-if="tab === 'settings'"
-            :user="user"
+            v-if="tab === 'settings' && isCurrentUser"
             @setAlert="setAlert"
+          />
+          <vUserDelete
+            v-if="tab === 'delete' && isCurrentUser"
+            @setAlert="setAlert"
+            :userId="user.id"
           />
         </main>
       </div>
@@ -73,6 +77,7 @@
 <script>
 import vUserInfo from "@/components/vUserInfo";
 import vUserSettings from "@/components/vUserSettings";
+import vUserDelete from "@/components/vUserDelete";
 import vAlert from "@/components/vAlert";
 import getValidURLImageForAvatar from "@/getValidURLImageForAvatar/index";
 
@@ -88,6 +93,7 @@ export default {
   async asyncData({ params: { id }, query: { tab }, store }) {
     try {
       const candidate = await store.dispatch("auth/getUser", id);
+      const currentUser = await store.dispatch("auth/getUser");
 
       return {
         tab,
@@ -97,6 +103,9 @@ export default {
               avatar: await getValidURLImageForAvatar(candidate.user.avatar),
             }
           : {},
+        isCurrentUser: candidate.ok
+          ? currentUser.user.id === candidate.user.id
+          : false,
       };
     } catch (err) {
       throw err;
@@ -118,12 +127,13 @@ export default {
   },
   methods: {
     setAlert(options) {
-      this.alerts.push(options);
+      this.alerts.unshift(options);
     },
   },
   components: {
     vUserInfo,
     vUserSettings,
+    vUserDelete,
     vAlert,
   },
 };

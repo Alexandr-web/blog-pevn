@@ -35,6 +35,71 @@
     align-items: center;
     padding-left: 25px;
 
+    &-submenu {
+      position: absolute;
+      bottom: -120%;
+      right: 0;
+      width: 150px;
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      z-index: 9999999;
+      background: $darkTheme_backgroundSubmenuHeader;
+      padding: 10px;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility, opacity, .4s;
+
+      &--show {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: -30px;
+        right: 0;
+        border: 20px solid transparent;
+        border-bottom: 20px solid $darkTheme_backgroundSubmenuHeader;
+        z-index: inherit;
+        width: 20px;
+        height: 20px;
+      }
+
+      &-item {
+        &:not(:last-child) {
+          margin-bottom: 5px;
+        }
+      }
+
+      &-logout {
+        cursor: pointer;
+        margin: 10px auto 0;
+        border: none;
+        background: none;
+        color: $invalid;
+        font-size: 14px;
+        @extend %roboto-300;
+      }
+
+      &-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        border-radius: 8px;
+        @extend %roboto-300;
+        font-size: 14px;
+        width: 100%;
+        color: $darkTheme_colorLinksSubmenuHeader;
+
+        &:hover {
+          background: $darkTheme_backgroundActiveLinksSubmenuHeader;
+        }
+      }
+    }
+
     &-create {
       display: flex;
       justify-content: center;
@@ -49,6 +114,29 @@
       &:not(:last-child) {
         margin-right: 20px;
       }
+
+      &-avatar {
+        margin-left: 25px;
+        position: relative;
+      }
+    }
+
+    &-avatar-block {
+      height: 40px;
+      width: 40px;
+      border-radius: 50%;
+      overflow: hidden;
+      background-color: #000000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: $darkTheme_boxShadowAvatarHeader;
+      cursor: pointer;
+    }
+
+    &-avatar {
+      width: 40px;
+      height: 40px;
     }
 
     &-link {
@@ -634,17 +722,33 @@
       padding-top: 6px;
     }
   }
+
+  &__main {
+    background: $darkTheme_backgroundMainUserPage;
+    padding: 25px;
+    border-radius: 12px 12px 0 0;
+  }
+
+  &__tab {
+    width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+
+    &-title {
+      font-size: 22px;
+      @extend %raleway-500;
+    }
+
+    &-desc {
+      @extend %roboto-300;
+      font-size: 17px;
+      opacity: .8;
+    }
+  }
 }
 
 .user-info {
-  width: 800px;
-  margin: 0 auto;
-
-  &__columns {
-    display: flex;
-    flex-direction: column;
-  }
-
   &__col {
     display: flex;
     justify-content: space-between;
@@ -677,8 +781,6 @@
 }
 
 .user-form {
-  width: 800px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
 
@@ -754,6 +856,20 @@
     border-radius: 8px;
     background: $darkTheme_backgroundSubmitSettingsUser;
     color: $darkTheme_colorSubmitSettingsUser;
+  }
+}
+
+.user-delete {
+  &__desc {
+    padding: 10px 0 25px;
+  }
+
+  &__btn {
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: $invalid;
+    margin: 0 auto;
   }
 }
 

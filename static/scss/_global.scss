@@ -25,6 +25,13 @@ img {
   height: auto;
 }
 
+button {
+  &[disabled] {
+    opacity: .8;
+    cursor: default;
+  }
+}
+
 h1,
 h2,
 h3,

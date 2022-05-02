@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     setAlert(options) {
-      this.alerts.push(options);
+      this.alerts.unshift(options);
     },
     async createPost({ title, message, files }) {
       try {
@@ -42,7 +42,7 @@ export default {
         const token = this.$store.getters["auth/getToken"];
         const user = await this.$store.dispatch("auth/getUser");
 
-        fd.append("userId", user.dataValues.id);
+        fd.append("userId", user.user.id);
         fd.append("title", title);
         fd.append("message", message);
 
@@ -50,25 +50,23 @@ export default {
 
         const res = await this.$store.dispatch("post/create", { fd, token });
 
-        if (res.ok) {
-          if (![400, 500, 404, 403].includes(res.status)) {
-            this.alerts.push({
-              type: "success",
-              title: "Успешно",
-              desc: res.message,
-            });
+        if (![400, 500, 404, 403].includes(res.status)) {
+          this.alerts.unshift({
+            type: "success",
+            title: "Успешно",
+            desc: res.message,
+          });
 
-            this.$router.push("/");
-          } else {
-            this.alerts.push({
-              type: "error",
-              title: "Ошибка",
-              desc: res.message,
-            });
-          }
+          this.$router.push("/");
+        } else {
+          this.alerts.unshift({
+            type: "error",
+            title: "Ошибка",
+            desc: res.message,
+          });
         }
       } catch (err) {
-        this.alerts.push({
+        this.alerts.unshift({
           title: "Ошибка",
           type: "error",
           desc: `Произошла ошибка сервера: ${err}`,
