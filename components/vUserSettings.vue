@@ -123,14 +123,12 @@ export default {
         ) {
           const fd = new FormData();
           const token = this.$store.getters["auth/getToken"];
-          const user = await this.$store.dispatch("auth/getUser");
 
           this.name && fd.append("name", this.name);
           this.email && fd.append("email", this.email);
           this.password && fd.append("password", this.password);
           this.avatar.file instanceof File &&
             fd.append("avatar", this.avatar.file);
-          user && fd.append("userId", user.user.id);
 
           const res = await this.$store.dispatch("user/changeSettings", {
             fd,

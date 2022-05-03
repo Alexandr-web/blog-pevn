@@ -18,7 +18,7 @@ export default {
         throw err;
       }
     },
-    async deleteAccount({ }, { fd, token }) {
+    async deleteAccount({ }, token) {
       try {
         const res = await fetch(`${host}/user/delete`, {
           method: "DELETE",
@@ -27,7 +27,6 @@ export default {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token || ""}`
           },
-          body: JSON.stringify(fd)
         });
 
         return res.json();

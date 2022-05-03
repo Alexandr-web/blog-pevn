@@ -19,12 +19,13 @@ class Post {
         const dataPost = {};
 
         for (let key in req.body) {
-          if (["title", "message", "userId"].includes(key)) {
+          if (["title", "message"].includes(key)) {
             dataPost[key] = req.body[key];
           }
         }
 
-        dataPost.images = req.files.map(file => file.filename);
+        dataPost.images = req.files ? req.files.map(file => file.filename) : [];
+        dataPost.userId = req.userId;
 
         await ModelPost.create(dataPost);
 
@@ -42,7 +43,8 @@ class Post {
   async setLike(req, res) {
     try {
       if (req.auth) {
-        const { userId, postId } = req.body;
+        const { postId } = req.body;
+        const { userId } = req;
         const post = await ModelPost.findOne({ where: { id: postId } });
         const indexFindUser = post.likes.findIndex(id => id === userId);
         let copyLikes = [...post.likes];

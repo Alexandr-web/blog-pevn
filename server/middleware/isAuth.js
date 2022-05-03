@@ -14,6 +14,7 @@ module.exports = async (req, res, next) => {
         const candidate = await User.findOne({ where: { id: dataValues.id } });
 
         req.auth = Boolean(candidate);
+        req.userId = dataValues.id;
       } else {
         req.auth = false;
       }

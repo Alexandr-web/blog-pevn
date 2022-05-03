@@ -51,9 +51,7 @@ export default {
         if ([title, message, files.length].some(Boolean)) {
           const fd = new FormData();
           const token = this.$store.getters["auth/getToken"];
-          const user = await this.$store.dispatch("auth/getUser");
 
-          fd.append("userId", user.user.id);
           fd.append("title", title);
           fd.append("message", message);
 

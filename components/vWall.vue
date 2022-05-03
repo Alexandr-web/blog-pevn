@@ -36,9 +36,8 @@ export default {
     async like(postId) {
       try {
         const token = this.$store.getters["auth/getToken"];
-        const user = await this.$store.dispatch("auth/getUser");
         const res = await this.$store.dispatch("post/like", {
-          fd: { postId, userId: user.user.id },
+          fd: { postId },
           token,
         });
 

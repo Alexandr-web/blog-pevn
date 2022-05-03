@@ -26,8 +26,7 @@ export default {
   methods: {
     deleteAccount() {
       const token = this.$store.getters["auth/getToken"];
-      const fd = { userId: this.userId };
-      const res = this.$store.dispatch("user/deleteAccount", { fd, token });
+      const res = this.$store.dispatch("user/deleteAccount", token);
 
       this.pending = true;
 
