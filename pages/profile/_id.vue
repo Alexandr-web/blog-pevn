@@ -62,7 +62,7 @@
             </ul>
           </nav>
         </header>
-        <main class="user-page__main">
+        <main class="user-page__main" v-if="isCurrentUser">
           <vUserInfo v-if="tab === 'info'" :user="user" />
           <vUserSettings
             v-if="tab === 'settings' && isCurrentUser"
