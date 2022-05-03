@@ -3,11 +3,16 @@
     <div class="container">
       <div class="alerts">
         <vAlert
-          v-for="(alert, index) in alerts"
-          :title="alert.title"
-          :desc="alert.desc"
-          :type="alert.type"
-          :key="index"
+          v-if="
+            Object.values(alertData)
+              .filter((val) => val !== 'show')
+              .every(Boolean)
+          "
+          :title="alertData.title"
+          :desc="alertData.desc"
+          :type="alertData.type"
+          :show="alertData.show"
+          @hide="hideAlert"
         />
       </div>
       <div class="auth__inner">
@@ -19,9 +24,12 @@
               type="text"
               placeholder="Имя"
               name="name"
-              v-model="name"
+              v-model.trim="$v.name.$model"
             />
-            <div class="auth__form-valid-field"></div>
+            <div
+              class="auth__form-valid-field"
+              :class="{ 'invalid-bg': $v.name.$invalid }"
+            ></div>
           </div>
           <div class="auth__form-field">
             <input
@@ -29,9 +37,12 @@
               type="text"
               placeholder="Эл. почта"
               name="email"
-              v-model="email"
+              v-model.trim="$v.email.$model"
             />
-            <div class="auth__form-valid-field"></div>
+            <div
+              class="auth__form-valid-field"
+              :class="{ 'invalid-bg': $v.email.$invalid }"
+            ></div>
           </div>
           <div class="auth__form-field">
             <input
@@ -39,9 +50,12 @@
               type="password"
               placeholder="Пароль"
               name="password"
-              v-model="password"
+              v-model="$v.password.$model"
             />
-            <div class="auth__form-valid-field"></div>
+            <div
+              class="auth__form-valid-field"
+              :class="{ 'invalid-bg': $v.password.$invalid }"
+            ></div>
           </div>
           <div class="auth__form-field">
             <input
@@ -49,9 +63,12 @@
               type="password"
               placeholder="Повторите пароль"
               name="repeatPassword"
-              v-model="repeatPassword"
+              v-model="$v.repeatPassword.$model"
             />
-            <div class="auth__form-valid-field"></div>
+            <div
+              class="auth__form-valid-field"
+              :class="{ 'invalid-bg': $v.repeatPassword.$invalid }"
+            ></div>
           </div>
           <button class="auth__form-submit" type="submit" :disabled="pending">
             Зарегистрироваться
@@ -72,6 +89,13 @@
 
 <script>
 import vAlert from "@/components/vAlert";
+import {
+  required,
+  minLength,
+  maxLength,
+  email,
+  sameAs,
+} from "vuelidate/lib/validators";
 
 export default {
   layout: "empty",
@@ -83,58 +107,89 @@ export default {
       repeatPassword: "",
       name: "",
       pending: false,
-      alerts: [],
+      alertData: {
+        type: "",
+        title: "",
+        desc: "",
+        show: false,
+      },
     };
+  },
+  validations: {
+    name: {
+      required,
+      minLength: minLength(6),
+      maxLength: maxLength(25),
+    },
+    email: {
+      email,
+      required,
+    },
+    password: {
+      required,
+      minLength: minLength(4),
+    },
+    repeatPassword: {
+      required,
+      sameAs: sameAs("password"),
+    },
   },
   methods: {
     registration() {
-      const fd = {
-        email: this.email,
-        password: this.password,
-        name: this.name,
-      };
+      this.$v.$touch();
 
-      if (!Object.values(fd).every(Boolean)) {
-        this.alerts.unshift({
+      if (!this.$v.$invalid) {
+        const fd = {
+          email: this.email,
+          password: this.password,
+          name: this.name,
+        };
+
+        const res = this.$store.dispatch("auth/registration", fd);
+
+        res
+          .then(({ message, status }) => {
+            this.pending = false;
+
+            if (![400, 500, 404].includes(status)) {
+              this.alertData = {
+                type: "success",
+                title: "Успешно",
+                desc: message,
+                show: true,
+              };
+
+              this.$router.push("/");
+            } else {
+              this.alertData = {
+                type: "error",
+                title: "Ошибка",
+                desc: message,
+                show: true,
+              };
+            }
+          })
+          .catch((err) => {
+            this.alertData = {
+              type: "error",
+              title: "Ошибка",
+              desc: "Произошла ошибка сервера, попробуйте перезагрузить сайт",
+              show: true,
+            };
+
+            throw err;
+          });
+      } else {
+        this.alertData = {
           type: "warning",
           title: "Внимание",
           desc: "Все поля формы должны быть заполнены",
-        });
-
-        return;
+          show: true,
+        };
       }
-
-      const res = this.$store.dispatch("auth/registration", fd);
-
-      res
-        .then(({ message, status }) => {
-          this.pending = false;
-
-          if (![400, 500, 404].includes(status)) {
-            this.alerts.unshift({
-              type: "success",
-              title: "Успешно",
-              desc: message,
-            });
-
-            this.$router.push("/");
-          } else {
-            this.alerts.unshift({
-              type: "error",
-              title: "Ошибка",
-              desc: message,
-            });
-          }
-        })
-        .catch((err) => {
-          this.alerts.unshift({
-            type: "error",
-            title: "Ошибка",
-            desc: "Произошла ошибка сервера, попробуйте перезагрузить сайт",
-          });
-
-          throw err;
-        });
+    },
+    hideAlert() {
+      this.alertData.show = false;
     },
   },
   components: {

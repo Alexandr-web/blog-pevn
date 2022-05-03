@@ -40,6 +40,7 @@ export default {
               type: "success",
               title: "Успешно",
               desc: message,
+              show: true,
             });
 
             this.$router.push("/");
@@ -48,6 +49,7 @@ export default {
               type: "error",
               title: "Ошибка",
               desc: message,
+              show: true,
             });
           }
         })
@@ -56,6 +58,7 @@ export default {
             type: "error",
             title: "Ошибка",
             desc: `Произошла ошибка сервера: ${err}`,
+            show: true,
           });
         });
     },

@@ -16,10 +16,12 @@
       </div>
     </header>
     <main class="post__main">
-      <h2 class="post__title" v-if="post.title">{{ post.title }}</h2>
+      <h2 class="post__title post__content-block" v-if="post.title">
+        {{ post.title }}
+      </h2>
       <ul
         v-if="post.images.length"
-        class="post__images"
+        class="post__images post__content-block"
         :class="{
           'post__images--even': post.images.length % 2 === 0,
           'post__images--odd':
@@ -30,7 +32,9 @@
           <img class="post__image-item" :src="image" />
         </li>
       </ul>
-      <p class="post__message" v-if="post.message">{{ post.message }}</p>
+      <p class="post__message post__content-block" v-if="post.message">
+        {{ post.message }}
+      </p>
     </main>
     <footer class="post__footer">
       <div class="post__controls">

@@ -6,6 +6,7 @@
       'alert--info': type === 'info',
       'alert--warning': type === 'warning',
       'alert--success': type === 'success',
+      'alert--hide': !show,
     }"
   >
     <div class="alert__inner">
@@ -30,15 +31,14 @@ export default {
       type: String,
       required: true,
     },
+    show: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
   },
-  created() {
-    setTimeout(() => {
-      this.$destroy();
-
-      if (this.$el && this.$el.parentNode) {
-        this.$el.parentNode.removeChild(this.$el);
-      }
-    }, 5000);
+  mounted() {
+    setTimeout(() => this.$emit("hide"), 5000);
   },
 };
 </script>

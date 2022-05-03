@@ -3,11 +3,16 @@
     <div class="container">
       <div class="alerts">
         <vAlert
-          v-for="(alert, index) in alerts"
-          :key="index"
-          :type="alert.type"
-          :title="alert.title"
-          :desc="alert.desc"
+          v-if="
+            Object.values(alertData)
+              .filter((val) => val !== 'show')
+              .every(Boolean)
+          "
+          :title="alertData.title"
+          :desc="alertData.desc"
+          :type="alertData.type"
+          :show="alertData.show"
+          @hide="hideAlert"
         />
       </div>
       <h1 class="title">Создание поста</h1>
@@ -25,7 +30,12 @@ export default {
   middleware: "checkAuth",
   data() {
     return {
-      alerts: [],
+      alertData: {
+        type: "",
+        title: "",
+        desc: "",
+        show: false,
+      },
     };
   },
   components: {
@@ -34,46 +44,61 @@ export default {
   },
   methods: {
     setAlert(options) {
-      this.alerts.unshift(options);
+      this.alertData = options;
     },
     async createPost({ title, message, files }) {
       try {
-        const fd = new FormData();
-        const token = this.$store.getters["auth/getToken"];
-        const user = await this.$store.dispatch("auth/getUser");
+        if ([title, message, files.length].some(Boolean)) {
+          const fd = new FormData();
+          const token = this.$store.getters["auth/getToken"];
+          const user = await this.$store.dispatch("auth/getUser");
 
-        fd.append("userId", user.user.id);
-        fd.append("title", title);
-        fd.append("message", message);
+          fd.append("userId", user.user.id);
+          fd.append("title", title);
+          fd.append("message", message);
 
-        files.map((image) => fd.append("files", image.file));
+          files.map((image) => fd.append("files", image.file));
 
-        const res = await this.$store.dispatch("post/create", { fd, token });
+          const res = await this.$store.dispatch("post/create", { fd, token });
 
-        if (![400, 500, 404, 403].includes(res.status)) {
-          this.alerts.unshift({
-            type: "success",
-            title: "Успешно",
-            desc: res.message,
-          });
+          if (![400, 500, 404, 403].includes(res.status)) {
+            this.setAlert({
+              type: "success",
+              title: "Успешно",
+              desc: res.message,
+              show: true,
+            });
 
-          this.$router.push("/");
+            this.$router.push("/");
+          } else {
+            this.setAlert({
+              type: "error",
+              title: "Ошибка",
+              desc: res.message,
+              show: true,
+            });
+          }
         } else {
-          this.alerts.unshift({
-            type: "error",
-            title: "Ошибка",
-            desc: res.message,
+          this.setAlert({
+            title: "Внимание",
+            type: "warning",
+            desc: "Хотя бы одно поле должно быть заполнено",
+            show: true,
           });
         }
       } catch (err) {
-        this.alerts.unshift({
+        this.setAlert({
           title: "Ошибка",
           type: "error",
           desc: `Произошла ошибка сервера: ${err}`,
+          show: true,
         });
 
         throw err;
       }
+    },
+    hideAlert() {
+      this.alertData.show = false;
     },
   },
 };

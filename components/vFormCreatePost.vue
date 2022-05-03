@@ -104,6 +104,7 @@ export default {
                 type: "error",
                 title: "Ошибка",
                 desc: `Произошла ошибка: ${reader.error}`,
+                show: true,
               });
 
               throw reader.error;
@@ -117,6 +118,7 @@ export default {
           type: "error",
           title: "Ошибка",
           desc: "Ваш браузер устарел и не поддерживает FileReader, пожалуйста установите современный и повторите попытку",
+          show: true,
         });
 
         this.textAreaFile = "Повторите попытку";

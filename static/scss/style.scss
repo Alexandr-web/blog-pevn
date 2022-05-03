@@ -256,6 +256,12 @@
     margin-bottom: 50px;
   }
 
+  &__content-block {
+    &:not(:last-child) {
+      margin-bottom: 15px;
+    }
+  }
+
   &__image {
     display: flex;
     align-items: center;
@@ -267,7 +273,6 @@
     display: grid;
     grid-template-columns: 1fr;
     grid-gap: 10px;
-    padding-top: 10px;
 
     &--even {
       grid-template-columns: repeat(2, 1fr);
@@ -299,7 +304,6 @@
     line-height: 25px;
     font-size: 18px;
     color: $darkTheme_colorMessagePost;
-    padding-top: 25px;
   }
 
   &__header {
@@ -411,6 +415,11 @@
   position: relative;
   border-radius: 10px;
   overflow: hidden;
+
+  &--hide {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
 
   &::before {
     content: "";
@@ -909,6 +918,10 @@
 
 .page {
   padding-top: $minHeightHeader + 30px;
+}
+
+.invalid-bg {
+  background: $invalid;
 }
 
 @import "./_supports";

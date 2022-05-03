@@ -94,6 +94,7 @@ export default {
               type: "error",
               title: "Ошибка",
               desc: `Произошла ошибка: ${reader.error}`,
+              show: true,
             });
 
             throw reader.error;
@@ -107,6 +108,7 @@ export default {
         this.$emit("setAlert", {
           type: "error",
           title: "Ошибка",
+          show: true,
           desc: "Ваш браузер устарел и не поддерживает FileReader, пожалуйста установите современный и повторите попытку",
         });
 
@@ -115,33 +117,47 @@ export default {
     },
     async changeSettings() {
       try {
-        const fd = new FormData();
-        const token = this.$store.getters["auth/getToken"];
-        const user = await this.$store.dispatch("auth/getUser");
+        if (
+          [this.name, this.email, this.password].some(Boolean) ||
+          this.avatar.file instanceof File
+        ) {
+          const fd = new FormData();
+          const token = this.$store.getters["auth/getToken"];
+          const user = await this.$store.dispatch("auth/getUser");
 
-        this.name && fd.append("name", this.name);
-        this.email && fd.append("email", this.email);
-        this.password && fd.append("password", this.password);
-        this.avatar.file instanceof File &&
-          fd.append("avatar", this.avatar.file);
-        user && fd.append("userId", user.user.id);
+          this.name && fd.append("name", this.name);
+          this.email && fd.append("email", this.email);
+          this.password && fd.append("password", this.password);
+          this.avatar.file instanceof File &&
+            fd.append("avatar", this.avatar.file);
+          user && fd.append("userId", user.user.id);
 
-        const res = await this.$store.dispatch("user/changeSettings", {
-          fd,
-          token,
-        });
-
-        if (![400, 500, 404, 403].includes(res.status)) {
-          this.$emit("setAlert", {
-            type: "success",
-            title: "Успешно",
-            desc: res.message,
+          const res = await this.$store.dispatch("user/changeSettings", {
+            fd,
+            token,
           });
+
+          if (![400, 500, 404, 403].includes(res.status)) {
+            this.$emit("setAlert", {
+              type: "success",
+              title: "Успешно",
+              desc: res.message,
+              show: true,
+            });
+          } else {
+            this.$emit("setAlert", {
+              type: "error",
+              title: "Ошибка",
+              desc: res.message,
+              show: true,
+            });
+          }
         } else {
           this.$emit("setAlert", {
-            type: "error",
-            title: "Ошибка",
-            desc: res.message,
+            type: "warning",
+            title: "Внимание",
+            desc: "Хотя бы одно поле должно быть заполнено",
+            show: true,
           });
         }
       } catch (err) {
@@ -149,6 +165,7 @@ export default {
           type: "error",
           title: "Ошибка",
           desc: `Произошла ошибка сервера: ${err}`,
+          show: true,
         });
 
         throw err;

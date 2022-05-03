@@ -3,11 +3,16 @@
     <div class="container">
       <ul class="alerts">
         <vAlert
-          v-for="(alert, index) in alerts"
-          :key="index"
-          :type="alert.type"
-          :title="alert.title"
-          :desc="alert.desc"
+          v-if="
+            Object.values(alertData)
+              .filter((val) => val !== 'show')
+              .every(Boolean)
+          "
+          :title="alertData.title"
+          :desc="alertData.desc"
+          :type="alertData.type"
+          :show="alertData.show"
+          @hide="hideAlert"
         />
       </ul>
       <div class="user-page">
@@ -87,7 +92,12 @@ export default {
   layout: "default",
   data() {
     return {
-      alerts: [],
+      alertData: {
+        show: false,
+        type: "",
+        title: "",
+        desc: "",
+      },
     };
   },
   async asyncData({ params: { id }, query: { tab }, store }) {
@@ -127,7 +137,10 @@ export default {
   },
   methods: {
     setAlert(options) {
-      this.alerts.unshift(options);
+      this.alertData = options;
+    },
+    hideAlert() {
+      this.alertData.show = false;
     },
   },
   components: {
