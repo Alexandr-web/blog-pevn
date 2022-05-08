@@ -20,21 +20,24 @@
         {{ post.title }}
       </h2>
       <ul
-        v-if="post.images.length"
-        class="post__images post__content-block"
-        :class="{
-          'post__images--even': post.images.length % 2 === 0,
-          'post__images--odd':
-            post.images.length > 1 && post.images.length % 2 !== 0,
-        }"
-      >
-        <li class="post__image" v-for="(image, index) in images" :key="index">
-          <img class="post__image-item" :src="image" />
+          v-if="post.images.length"
+          class="post__images post__content-block"
+          ref="show-full-target"
+          :class="{
+            'post__images--even': post.images.length % 2 === 0,
+            'post__images--odd':
+              post.images.length > 1 && post.images.length % 2 !== 0,
+          }"
+        >
+        <li class="post__image" v-for="(image, index) in images" :key="index" ref="postImage">
+          <img class="post__image-item" src="" :data-src="image" />
         </li>
       </ul>
-      <p class="post__message post__content-block" v-if="post.message">
-        {{ post.message }}
-      </p>
+      <vShowFull>
+        <p class="post__message post__content-block" v-if="post.message" slot="target">
+          {{ post.message }}
+        </p>
+      </vShowFull>
     </main>
     <footer class="post__footer">
       <div class="post__controls">
@@ -60,6 +63,7 @@
 
 <script>
 import getValidURLImageForAvatar from "@/getValidURLImageForAvatar/index";
+import vShowFull from "@/components/vShowFull";
 
 export default {
   props: {
@@ -75,6 +79,23 @@ export default {
       isValidUser: false,
       images: [],
     };
+  },
+  async mounted() {
+    const postsImages = await this.getPostImages;
+
+    if (postsImages) {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.intersectionRatio > 0) {
+            const image = entry.target.querySelector("img");
+
+            image.src = image.dataset.src;
+          }
+        });
+      });
+
+      postsImages.forEach(post => observer.observe(post));
+    }
   },
   async fetch() {
     try {
@@ -103,6 +124,9 @@ export default {
     }
   },
   methods: {
+    showFullContent() {
+
+    },
     async getValidURLImageForPost(image) {
       const url = await require(`@/postsImages/${image}`);
 
@@ -121,5 +145,13 @@ export default {
       return likes.findIndex((id) => this.currentUser.id === id) !== -1;
     },
   },
+  computed: {
+    async getPostImages() {
+      return this.$refs.postImage;
+    }
+  },
+  components: {
+    vShowFull
+  }
 };
 </script>

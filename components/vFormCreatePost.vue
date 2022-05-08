@@ -10,12 +10,12 @@
         class="form-create__input form-create__input-title"
         type="text"
         placeholder="Заголовок"
-        v-model="title"
+        v-model.trim="title"
       />
     </div>
     <div class="form-create__field">
       <textarea
-        v-model="message"
+        v-model.trim="message"
         placeholder="Описание"
         class="form-create__input form-create__input-message"
       ></textarea>

@@ -12,7 +12,7 @@
           class="user-form__input"
           type="text"
           placeholder="Имя"
-          v-model="name"
+          v-model.trim="$v.name.$model"
         />
       </div>
       <div class="user-form__field">
@@ -21,7 +21,7 @@
           class="user-form__input"
           type="text"
           placeholder="Email"
-          v-model="email"
+          v-model.trim="$v.email.$model"
         />
       </div>
       <div class="user-form__field">
@@ -30,7 +30,7 @@
           class="user-form__input"
           type="password"
           placeholder="Пароль"
-          v-model="password"
+          v-model.trim="$v.password.$model"
         />
       </div>
       <div class="user-form__field user-form__field-center">
@@ -59,6 +59,8 @@
 </template>
 
 <script>
+import { minLength, email } from "vuelidate/lib/validators";
+
 export default {
   data() {
     return {
@@ -71,6 +73,17 @@ export default {
       textAreaFile: "Загрузить аватар",
       File: Object,
     };
+  },
+  validations: {
+    name: {
+      minLength: minLength(6),
+    },
+    email: {
+      email
+    },
+    password: {
+      minLength: minLength(6)
+    },
   },
   mounted() {
     this.File = File;
@@ -117,8 +130,10 @@ export default {
     },
     async changeSettings() {
       try {
+        this.$v.$touch();
+
         if (
-          [this.name, this.email, this.password].some(Boolean) ||
+          !this.$v.$invalid ||
           this.avatar.file instanceof File
         ) {
           const fd = new FormData();
@@ -154,7 +169,7 @@ export default {
           this.$emit("setAlert", {
             type: "warning",
             title: "Внимание",
-            desc: "Хотя бы одно поле должно быть заполнено",
+            desc: "Данные должны быть заполнены правильно",
             show: true,
           });
         }
