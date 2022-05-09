@@ -61,13 +61,19 @@
       </ul>
     </div>
     <div class="form-create__field form-create__field-center">
-      <button class="form-create__submit" type="submit">Создать</button>
+      <button class="form-create__submit" type="submit" :disabled="pending">Создать</button>
     </div>
   </form>
 </template>
 
 <script>
 export default {
+  props: {
+    pending: {
+      type: Boolean,
+      required: true
+    }
+  },
   data() {
     return {
       title: "",
@@ -110,8 +116,6 @@ export default {
               throw reader.error;
             });
           });
-        } else {
-          this.files = [];
         }
       } else {
         this.$emit("setAlert", {

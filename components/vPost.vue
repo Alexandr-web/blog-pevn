@@ -22,15 +22,14 @@
       <ul
           v-if="post.images.length"
           class="post__images post__content-block"
-          ref="show-full-target"
           :class="{
             'post__images--even': post.images.length % 2 === 0,
             'post__images--odd':
               post.images.length > 1 && post.images.length % 2 !== 0,
           }"
         >
-        <li class="post__image" v-for="(image, index) in images" :key="index" ref="postImage">
-          <img class="post__image-item" src="" :data-src="image" />
+        <li class="post__image" v-for="(image, index) in images" :key="index">
+          <img class="post__image-item" :src="image" />
         </li>
       </ul>
       <vShowFull>
@@ -51,7 +50,7 @@
         </button>
         <nuxt-link
           class="post__btn post__edit"
-          :to="`/edit/${post.userId}`"
+          :to="`/edit/${post.id}`"
           v-if="isValidUser"
         >
           Редактировать
@@ -63,6 +62,7 @@
 
 <script>
 import getValidURLImageForAvatar from "@/getValidURLImageForAvatar/index";
+import getValidURLImageForImagesPost from "@/getValidURLImageForImagesPost/index";
 import vShowFull from "@/components/vShowFull";
 
 export default {
@@ -80,23 +80,6 @@ export default {
       images: [],
     };
   },
-  async mounted() {
-    const postsImages = await this.getPostImages;
-
-    if (postsImages) {
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.intersectionRatio > 0) {
-            const image = entry.target.querySelector("img");
-
-            image.src = image.dataset.src;
-          }
-        });
-      });
-
-      postsImages.forEach(post => observer.observe(post));
-    }
-  },
   async fetch() {
     try {
       const userOfPost = await this.$store.dispatch(
@@ -106,7 +89,7 @@ export default {
       const currentUser = await this.$store.dispatch("auth/getUser");
 
       this.post.images.map((image) => {
-        this.getValidURLImageForPost(image)
+        getValidURLImageForImagesPost(image)
           .then((res) => this.images.push(res))
           .catch((err) => {
             throw err;
@@ -124,14 +107,6 @@ export default {
     }
   },
   methods: {
-    showFullContent() {
-
-    },
-    async getValidURLImageForPost(image) {
-      const url = await require(`@/postsImages/${image}`);
-
-      return /^\/\_nuxt\//.test(url) ? url : "";
-    },
     getValidDate(dateStr) {
       const date = new Date(dateStr);
 
@@ -144,11 +119,6 @@ export default {
     isCurrentUserLike(likes) {
       return likes.findIndex((id) => this.currentUser.id === id) !== -1;
     },
-  },
-  computed: {
-    async getPostImages() {
-      return this.$refs.postImage;
-    }
   },
   components: {
     vShowFull

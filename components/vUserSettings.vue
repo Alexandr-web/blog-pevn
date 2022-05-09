@@ -112,10 +112,6 @@ export default {
 
             throw reader.error;
           });
-        } else {
-          this.avatar = {
-            file: {},
-          };
         }
       } else {
         this.$emit("setAlert", {

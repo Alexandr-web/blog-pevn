@@ -10,9 +10,24 @@ export default {
             "Accept-Type": "application/json"
           }
         });
-
+        
         return res.json();
       } catch (err) {
+        throw err;
+      }
+    },
+
+    async asyncPost({}, id) {
+      try {
+        const res = await fetch(`${host}/post/${id}`, {
+          method: "GET",
+          headers: {
+            "Accept-Type": "application/json"
+          }
+        });
+
+        return res.json();
+      } catch(err) {
         throw err;
       }
     },
@@ -48,6 +63,23 @@ export default {
 
         return res.json();
       } catch (err) {
+        throw err;
+      }
+    },
+
+    async edit({}, { token, fd, postId }) {
+      try {
+        const res = await fetch(`${host}/post/edit/${postId}`, {
+          method: "POST",
+          headers: {
+            "Accept-Type": "application/json",
+            Authorization: `Bearer ${token || ""}`
+          },
+          body: fd
+        });
+
+        return res.json();
+      } catch(err) {
         throw err;
       }
     }

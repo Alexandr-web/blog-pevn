@@ -305,6 +305,7 @@
     font-size: 18px;
     color: $darkTheme_colorMessagePost;
     @extend %roboto-300;
+    word-break: break-word;
   }
 
   &__header {
@@ -890,7 +891,6 @@
     flex-direction: column;
     justify-content: flex-end;
     align-items: flex-start;
-    padding: 10px;
     
     &::before {
       content: "";

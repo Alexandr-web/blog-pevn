@@ -1,4 +1,4 @@
-const { Post: ModelPost, User } = require("../models/index");
+const { Post: ModelPost } = require("../models/index");
 
 class Post {
   async getPost(req, res) {
@@ -10,6 +10,19 @@ class Post {
       console.log(err);
 
       return res.status(500).json({ ok: false, message: "Произошла ошибка сервера" });
+    }
+  }
+
+  async getOnePost(req, res) {
+    try {
+      const { id } = req.params;
+      const post = await ModelPost.findOne({ where: { id } });
+
+      return res.status(200).json({ ok: true, post: post || {} });
+    } catch(err) {
+      console.log(err);
+
+      return res.status(500).json({ ok: false, message: "Произошла ощибка сервера" });
     }
   }
 
@@ -66,6 +79,36 @@ class Post {
       console.log(err);
 
       return res.status(500).json({ ok: false, message: "Произошла ошибка сервера" });
+    }
+  }
+
+  async edit(req, res) {
+    try {
+      if (req.auth) {
+        const { title, message, images } = req.body;
+        const { id } = req.params;
+        const files = req.files;
+        const post = await ModelPost.findOne({ where: { id } });
+
+        if (post) {
+          await post.update({
+            images: files.length ? files.map(file => file.filename).concat(JSON.parse(images)) : JSON.parse(images), 
+            title, 
+            message
+          });
+          await post.save();
+        } else {
+          return res.status(404).json({ ok: false, message: "Пост не найден", status: 404 });
+        }
+
+        return res.status(200).json({ ok: true, message: "Пост успешно отредактирован", status: 200 });
+      } else {
+        return res.status(403).json({ ok: false, message: "Для выполнения данной операции вам необходимо авторизоваться", status: 403 });
+      }
+    } catch(err) {
+      console.log(err);
+
+      return res.status(500).json({ ok: false, message: "Произошла ошибка сервера", status: 500 });
     }
   }
 }

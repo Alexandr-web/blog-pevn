@@ -94,8 +94,8 @@ export default {
 
     async getUser({ }, id) {
       try {
-        const sendReq = async currentId => {
-          const res = await fetch(`${host}/auth/user/${currentId}`, {
+        const sendReq = async userId => {
+          const res = await fetch(`${host}/auth/user/${userId}`, {
             method: "GET",
             headers: {
               "Accept-Type": "application/json"
@@ -111,7 +111,7 @@ export default {
           const cookieStr = process.browser ? document.cookie : this.app.context.req.headers.cookie || "";
           const findToken = Cookie.parse(cookieStr);
           const res = findToken ? jwtDecode(findToken.token) || {} : {};
-
+          
           if (Object.keys(res).length) {
             return sendReq(res.dataValues.id);
           } else {

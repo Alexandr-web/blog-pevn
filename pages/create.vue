@@ -16,7 +16,11 @@
         />
       </div>
       <h1 class="title">Создание поста</h1>
-      <vFormCreatePost @setAlert="setAlert" @createPost="createPost" />
+      <vFormCreatePost
+        @setAlert="setAlert"
+        @createPost="createPost"
+        :pending="pending"
+      />
     </div>
   </div>
 </template>
@@ -30,6 +34,7 @@ export default {
   middleware: "checkAuth",
   data() {
     return {
+      pending: false,
       alertData: {
         type: "",
         title: "",
@@ -46,53 +51,58 @@ export default {
     setAlert(options) {
       this.alertData = options;
     },
-    async createPost({ title, message, files }) {
-      try {
-        if ([title, message, files.length].some(Boolean)) {
-          const fd = new FormData();
-          const token = this.$store.getters["auth/getToken"];
+    createPost({ title, message, files }) {
+      if ([title, message, files.length].some(Boolean)) {
+        const fd = new FormData();
+        const token = this.$store.getters["auth/getToken"];
 
-          fd.append("title", title);
-          fd.append("message", message);
+        fd.append("title", title);
+        fd.append("message", message);
 
-          files.map((image) => fd.append("files", image.file));
+        files.map((image) => fd.append("files", image.file));
 
-          const res = await this.$store.dispatch("post/create", { fd, token });
+        const res = this.$store.dispatch("post/create", { fd, token });
 
-          if (![400, 500, 404, 403].includes(res.status)) {
+        this.pending = true;
+
+        res
+          .then(({ status, message }) => {
+            this.pending = false;
+            
+            if (![400, 500, 404, 403].includes(status)) {
+              this.setAlert({
+                type: "success",
+                title: "Успешно",
+                desc: message,
+                show: true,
+              });
+
+              this.$router.push("/");
+            } else {
+              this.setAlert({
+                type: "error",
+                title: "Ошибка",
+                desc: message,
+                show: true,
+              });
+            }
+          })
+          .catch((err) => {
             this.setAlert({
-              type: "success",
-              title: "Успешно",
-              desc: res.message,
-              show: true,
-            });
-
-            this.$router.push("/");
-          } else {
-            this.setAlert({
-              type: "error",
               title: "Ошибка",
-              desc: res.message,
+              type: "error",
+              desc: `Произошла ошибка сервера: ${err}`,
               show: true,
             });
-          }
-        } else {
-          this.setAlert({
-            title: "Внимание",
-            type: "warning",
-            desc: "Хотя бы одно поле должно быть заполнено",
-            show: true,
+            throw err;
           });
-        }
-      } catch (err) {
+      } else {
         this.setAlert({
-          title: "Ошибка",
-          type: "error",
-          desc: `Произошла ошибка сервера: ${err}`,
+          title: "Внимание",
+          type: "warning",
+          desc: "Хотя бы одно поле должно быть заполнено",
           show: true,
         });
-
-        throw err;
       }
     },
     hideAlert() {
