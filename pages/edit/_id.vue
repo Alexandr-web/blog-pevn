@@ -99,57 +99,72 @@ export default {
       this.alertData = options;
     },
     editPost() {
-      const fd = new FormData();
-      const { id } = this.$route.params;
+      const { title, message } = this.post;
 
-      fd.append("title", this.post.title);
-      fd.append("message", this.post.message);
-      fd.append(
-        "images",
-        JSON.stringify(this.files.filter((file) => typeof file === "string"))
-      );
+      if ([title, message, this.files.length].some(Boolean)) {
+        const fd = new FormData();
+        const { id } = this.$route.params;
 
-      this.files
-        .filter((file) => typeof file !== "string")
-        .map((file) => fd.append("files", file.file));
+        fd.append("title", this.post.title);
+        fd.append("message", this.post.message);
+        fd.append(
+          "images",
+          JSON.stringify(this.files.filter((file) => typeof file === "string"))
+        );
 
-      const token = this.$store.getters["auth/getToken"];
-      const res = this.$store.dispatch("post/edit", { fd, token, postId: id });
+        this.files
+          .filter((file) => typeof file !== "string")
+          .map((file) => fd.append("files", file.file));
 
-      this.pending = true;
+        const token = this.$store.getters["auth/getToken"];
+        const res = this.$store.dispatch("post/edit", {
+          fd,
+          token,
+          postId: id,
+        });
 
-      res
-        .then(({ message, status }) => {
-          this.pending = false;
+        this.pending = true;
 
-          if (![400, 500, 404, 403].includes(status)) {
-            this.setAlert({
-              type: "success",
-              title: "Успешно",
-              desc: message,
-              show: true,
-            });
+        res
+          .then(({ message, status }) => {
+            this.pending = false;
 
-            this.$router.push("/");
-          } else {
+            if (![400, 500, 404, 403].includes(status)) {
+              this.setAlert({
+                type: "success",
+                title: "Успешно",
+                desc: message,
+                show: true,
+              });
+
+              this.$router.push("/");
+            } else {
+              this.setAlert({
+                type: "error",
+                title: "Ошибка",
+                desc: message,
+                show: true,
+              });
+            }
+          })
+          .catch((err) => {
             this.setAlert({
               type: "error",
               title: "Ошибка",
-              desc: message,
+              desc: `Произошла ошибка сервера: ${err}`,
               show: true,
             });
-          }
-        })
-        .catch((err) => {
-          this.setAlert({
-            type: "error",
-            title: "Ошибка",
-            desc: `Произошла ошибка сервера: ${err}`,
-            show: true,
-          });
 
-          throw err;
+            throw err;
+          });
+      } else {
+        this.setAlert({
+          type: "warning",
+          title: "Внимание",
+          desc: "Хотя бы ожно поле должно быть заполнено",
+          show: true,
         });
+      }
     },
     hideAlert() {
       this.alertData.show = false;

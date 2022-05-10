@@ -6,6 +6,7 @@
         :key="index"
         :post="post"
         @like="like"
+        @setAlert="callAlert"
       />
     </ul>
   </div>
@@ -52,6 +53,10 @@ export default {
         throw err;
       }
     },
+
+    callAlert(options) {
+      this.$emit("callAlert", options);
+    }
   },
 };
 </script>

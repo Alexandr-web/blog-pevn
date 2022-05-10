@@ -9,7 +9,11 @@
             alt="Изображение пользователя"
           />
         </div>
-        <h4 class="post__user-name">{{ user.name }}</h4>
+        <h4 class="post__user-name">
+          <nuxt-link class="post__user-name-link" :to="`/profile/${user.id}`">{{
+            user.name
+          }}</nuxt-link>
+        </h4>
       </div>
       <div class="post__block">
         <h6 class="post__date">{{ getValidDate(post.createdAt) }}</h6>
@@ -20,34 +24,33 @@
         {{ post.title }}
       </h2>
       <ul
-          v-if="post.images.length"
-          class="post__images post__content-block"
-          :class="{
-            'post__images--even': post.images.length % 2 === 0,
-            'post__images--odd':
-              post.images.length > 1 && post.images.length % 2 !== 0,
-          }"
-        >
+        v-if="images.length"
+        class="post__images post__content-block"
+        :class="{
+          'post__images--even': images.length % 2 === 0,
+          'post__images--odd': images.length > 1 && images.length % 2 !== 0,
+        }"
+      >
         <li class="post__image" v-for="(image, index) in images" :key="index">
           <img class="post__image-item" :src="image" />
         </li>
       </ul>
-      <vShowFull>
-        <p class="post__message post__content-block" v-if="post.message" slot="target">
+      <vShowFull v-if="post.message">
+        <p class="post__message post__content-block" slot="target">
           {{ post.message }}
         </p>
       </vShowFull>
     </main>
     <footer class="post__footer">
+      <button
+        class="post__btn post__like"
+        :class="{ 'active-like': isCurrentUserLike(post.likes) }"
+        @click="$emit('like', post.id)"
+      >
+        Нравится
+        <span class="post__like-count">{{ post.likes.length }}</span>
+      </button>
       <div class="post__controls">
-        <button
-          class="post__btn post__like"
-          :class="{ 'active-like': isCurrentUserLike(post.likes) }"
-          @click="$emit('like', post.id)"
-        >
-          Нравится
-          <span class="post__like-count">{{ post.likes.length }}</span>
-        </button>
         <nuxt-link
           class="post__btn post__edit"
           :to="`/edit/${post.id}`"
@@ -55,6 +58,14 @@
         >
           Редактировать
         </nuxt-link>
+        <button
+          class="post__btn post__delete"
+          @click="removePost"
+          :disabled="pendingRemove"
+          v-if="isValidUser"
+        >
+          Удалить
+        </button>
       </div>
     </footer>
   </li>
@@ -78,6 +89,7 @@ export default {
       currentUser: {},
       isValidUser: false,
       images: [],
+      pendingRemove: false,
     };
   },
   async fetch() {
@@ -88,13 +100,15 @@ export default {
       );
       const currentUser = await this.$store.dispatch("auth/getUser");
 
-      this.post.images.map((image) => {
-        getValidURLImageForImagesPost(image)
-          .then((res) => this.images.push(res))
-          .catch((err) => {
-            throw err;
-          });
-      });
+      if (this.post.images.length) {
+        this.post.images.map((image) => {
+          getValidURLImageForImagesPost(image)
+            .then((res) => this.images.push(res))
+            .catch((err) => {
+              throw err;
+            });
+        });
+      }
 
       this.isValidUser = currentUser.user.id === userOfPost.user.id;
       this.user = {
@@ -119,9 +133,47 @@ export default {
     isCurrentUserLike(likes) {
       return likes.findIndex((id) => this.currentUser.id === id) !== -1;
     },
+    removePost() {
+      const { id } = this.post;
+      const token = this.$store.getters["auth/getToken"];
+      const res = this.$store.dispatch("post/remove", { token, postId: id });
+
+      this.pending = true;
+
+      res
+        .then(({ message, status }) => {
+          this.pending = false;
+
+          if (![400, 500, 404, 403].includes(status)) {
+            this.$emit("setAlert", {
+              type: "success",
+              title: "Успешно",
+              desc: message,
+              show: true,
+            });
+          } else {
+            this.$emit("setAlert", {
+              type: "error",
+              title: "Ошибка",
+              desc: message,
+              show: true,
+            });
+          }
+        })
+        .catch((err) => {
+          this.$emit("setAlert", {
+            type: "error",
+            title: "Ошибка",
+            desc: `Произошла ошибка сервера: ${err}`,
+            show: true,
+          });
+
+          throw err;
+        });
+    },
   },
   components: {
-    vShowFull
-  }
+    vShowFull,
+  },
 };
 </script>

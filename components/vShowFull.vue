@@ -16,9 +16,11 @@ export default {
     }
   },
   async mounted() {
-    const el = await this.$slots.target[0];
-    
-    this.showArea = el ? el.elm.offsetHeight >= 100 : false;
+    const targets = await this.$slots.target;
+
+    if (targets && targets.length) {
+      this.showArea = targets[0] ? targets[0].elm.offsetHeight >= 100 : false;
+    }
   }
 }
 </script>

@@ -91,17 +91,52 @@ class Post {
         const post = await ModelPost.findOne({ where: { id } });
 
         if (post) {
-          await post.update({
-            images: files.length ? files.map(file => file.filename).concat(JSON.parse(images)) : JSON.parse(images), 
-            title, 
-            message
-          });
-          await post.save();
+          const { userId } = post.dataValues;
+
+          if (userId === req.userId) {
+            await post.update({
+              images: files.length ? files.map(file => file.filename).concat(JSON.parse(images)) : JSON.parse(images), 
+              title, 
+              message
+            });
+            await post.save();
+          } else {
+            return res.status(403).json({ ok: false, message: "У вас нет доступа для редактирования этого поста", status: 403 });
+          }
         } else {
           return res.status(404).json({ ok: false, message: "Пост не найден", status: 404 });
         }
 
         return res.status(200).json({ ok: true, message: "Пост успешно отредактирован", status: 200 });
+      } else {
+        return res.status(403).json({ ok: false, message: "Для выполнения данной операции вам необходимо авторизоваться", status: 403 });
+      }
+    } catch(err) {
+      console.log(err);
+
+      return res.status(500).json({ ok: false, message: "Произошла ошибка сервера", status: 500 });
+    }
+  }
+
+  async remove(req, res) {
+    try {
+      if (req.auth) {
+        const { id: postId } = req.params;
+        const post = await ModelPost.findOne({ where: { id: postId } });
+
+        if (post) {
+          const { userId } = post.dataValues;
+
+          if (req.userId === userId) {
+            await post.destroy();
+          } else {
+            return res.status(403).json({ ok: false, message: "У вас нет доступа для удаления этого поста", status: 403 });
+          }
+        } else {
+          return res.status(404).json({ ok: false, message: "Пост не найден", status: 404 });
+        }
+
+        return res.status(200).json({ ok: true, message: "Пост был удален", status: 200 });
       } else {
         return res.status(403).json({ ok: false, message: "Для выполнения данной операции вам необходимо авторизоваться", status: 403 });
       }

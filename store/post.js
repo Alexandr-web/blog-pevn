@@ -82,6 +82,22 @@ export default {
       } catch(err) {
         throw err;
       }
+    },
+
+    async remove({}, { token, postId }) {
+      try {
+        const res = await fetch(`${host}/post/remove/${postId}`, {
+          method: "DELETE",
+          headers: {
+            "Accept-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        return res.json();
+      } catch(err) {
+        throw err;
+      }
     }
   }
 }
