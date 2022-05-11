@@ -1,0 +1,654 @@
+body {
+  @extend %roboto-400;
+
+  // Установка стилей под тему сайта
+  &[data-theme="dark"] {
+    background: $darkTheme_backgroundPage;
+    color: $darkTheme_colorItems;
+
+    .header {
+      background: $darkTheme_backgroundHeader;
+
+      &__logo {
+        color: $darkTheme_colorHeaderLogo;
+      }
+
+      &__list {
+        &-submenu {
+          background: $darkTheme_backgroundSubmenuHeader;
+
+          &::before {
+            background: $darkTheme_backgroundSubmenuHeader;
+          }
+
+          &-link {
+            color: $darkTheme_colorLinksSubmenuHeader;
+
+            &:hover {
+              background: $darkTheme_backgroundActiveLinksSubmenuHeader;
+            }
+          }
+        }
+
+        &-create {
+          background: $darkTheme_backgroundCreateBtn;
+          color: $darkTheme_colorCreateBtn;
+        }
+
+        &-avatar-block {
+          box-shadow: $darkTheme_boxShadowAvatarHeader;
+        }
+
+        &-link {
+          &:not([class*=header__list-create]) {
+            color: $darkTheme_colorHeaderLinks;
+            
+            &:hover {
+              color: $darkTheme_colorHoverHeaderLinks;
+            }
+          }
+        }
+      }
+    }
+
+    .auth {
+      &__additionally {
+        &-link {
+          color: $darkTheme_colorAuthAdditionallyLink;
+        }
+      }
+
+      &__form {
+        &-input {
+          background: $darkTheme_backgroundAuthInput;
+          color: $darkTheme_colorAuthInput;
+        }
+
+        &-submit {
+          background: $darkTheme_backgroundAuthSubmit;
+          color: $darkTheme_colorAuthSubmit;
+        }
+      }
+    }
+
+    .post {
+      background: $darkTheme_backgroundPost;
+
+      &__image {
+        background-color: $darkTheme_backgroundBlockImagePost;
+      }
+
+      &__message {
+        color: $darkTheme_colorMessagePost;
+      }
+
+      &__edit {
+        color: $darkTheme_colorEditPost;
+      }
+
+      &__delete {
+        color: $darkTheme_colorRemovePost;
+      }
+
+      &__like {
+        background: $darkTheme_backgroundLikePost;
+        color: $darkTheme_colorDisabledLikePost;
+      }
+
+      &__user {
+        &-name-link {
+          color: $darkTheme_colorItems;
+        }
+      }
+
+      &__main {
+        border-top: 1px solid $darkTheme_borderColorPost;
+        border-bottom: 1px solid $darkTheme_borderColorPost;
+      }
+    }
+
+    .alert {
+      &--success {
+        &::before {
+          background: linear-gradient(to right, $darkTheme_colorAlertSuccess, transparent, transparent);
+        }
+
+        .alert__title {
+          color: $darkTheme_colorAlertSuccess;
+        }
+      }
+
+      &--error {
+        &::before {
+          background: linear-gradient(to right, $darkTheme_colorAlertError, transparent, transparent);
+        }
+
+        .alert__title {
+          color: $darkTheme_colorAlertError;
+        }
+      }
+
+      &--info {
+        &::before {
+          background: linear-gradient(to right, $darkTheme_colorAlertInfo, transparent, transparent);
+        }
+
+        .alert__title {
+          color: $darkTheme_colorAlertInfo;
+        }
+      }
+
+      &--warning {
+        &::before {
+          background: linear-gradient(to right, $darkTheme_colorAlertWarning, transparent, transparent);
+        }
+
+        .alert__title {
+          color: $darkTheme_colorAlertWarning;
+        }
+      }
+
+      &__inner {
+        background: $darkTheme_backgroundAlert;
+      }
+
+      &__desc {
+        color: $darkTheme_colorAlertDesc;
+      }
+    }
+
+    .form-create {
+      &__files {
+        &-name {
+          background: $darkTheme_backgroundAreaFileName;
+        }
+
+        &-remove {
+          background: $darkTheme_backgroundRemoveButton;
+
+          &::before,
+          &::after {
+            background: $darkTheme_colorRemoveButton;
+          }
+        }
+      }
+
+      &__area-file {
+        border: 2px dashed $darkTheme_borderColorAreaFile;
+
+        &--success {
+          border-color: $darkTheme_borderColorSuccessFile;
+
+          &>span {
+            color: $darkTheme_colorSuccessFile;
+          }
+        }
+      }
+
+      &__file-text {
+        color: $darkTheme_colorDisabledFile;
+      }
+
+      &__input {
+        background: $darkTheme_backgroundInputFormCreate;
+        color: $darkTheme_colorInputFormCreate;
+
+        &::placeholder {
+          color: $darkTheme_colorPlaceholderInputFormCreate;
+        }
+
+        &:focus {
+          box-shadow: $darkTheme_boxShadowActiveInput;
+        }
+      }
+
+      &__submit {
+        background: $darkTheme_backgroundSubmitFromCreate;
+        color: $darkTheme_colorSubmitFromCreate;
+      }
+    }
+
+    .user-page {
+      &__navbar {
+        &-list {
+          &-link {
+            color: $darkTheme_colorLinksNavbarUserPage;
+          }
+        }
+      }
+
+      &__info {
+        background: $darkTheme_backgroundHeaderUserPage;
+      }
+
+      &__main {
+        background: $darkTheme_backgroundMainUserPage;
+      }
+    }
+
+    .user-info {
+      &__col {
+        &:nth-child(even) {
+          background: $darkTheme_backgroundEvenColUserInfo;
+        }
+      }
+
+      &__desc {
+        color: $darkTheme_colorDescColUserInfo;
+      }
+    }
+
+    .user-form {
+      &__area-file {
+        border: 2px dashed $darkTheme_borderColorAreaFile;
+
+        &--success {
+          border-color: $darkTheme_borderColorSuccessFile;
+
+          &>span {
+            color: $darkTheme_colorSuccessFile;
+          }
+        }
+      }
+
+      &__file {
+        &-text {
+          color: $darkTheme_colorDisabledFile;
+        }
+      }
+
+      &__subtitle {
+        color: $darkTheme_colorUserFormSubtitle;
+      }
+
+      &__input {
+        background: $darkTheme_backgroundInputSettingsUser;
+        color: $darkTheme_colorInputSettingsUser;
+
+        &:focus {
+          background: $darkTheme_backgroundFocusInputSettingsUser;
+        }
+
+        &::placeholder {
+          color: $darkTheme_colorPlaceholderInputSettingsUser;
+        }
+      }
+
+      &__submit {
+        background: $darkTheme_backgroundSubmitSettingsUser;
+        color: $darkTheme_colorSubmitSettingsUser;
+      }
+
+      &__radio {
+        &:checked+span::before {
+          background: $darkTheme_backgroundRadioDots;
+        }
+
+        &-text {
+          &::before {
+            border: 2px solid $darkTheme_colorBorderRadioDots;
+          }
+        }
+      }
+    }
+
+    .show-full {
+      &__area {
+        &::before {
+          background: $darkTheme_backgroundShowFullArea;
+        }
+      }
+
+      &__btn {
+        color: $darkTheme_colorShowAlsoBtn;
+      }
+    }
+
+    .active-link {
+      color: $darkTheme_colorHoverHeaderLinks;
+    }
+
+    .active-like {
+      background: $darkTheme_backgroundLikeActivePost;
+      color: $darkTheme_colorLikeActivePost;
+
+      &>span {
+        background: $darkTheme_backgroundCountLikePost;
+        color: $darkTheme_colorCountLikePost;
+      }
+    }
+
+    .active-user-link {
+      color: $darkTheme_colorActiveLinksNavbarUserPage;
+
+      &::after {
+        background: $darkTheme_backgroundActiveLinksNavbarUserPage;
+      }
+    }
+  }
+
+  &[data-theme="light"] {
+    background: $lightTheme_backgroundPage;
+    color: $lightTheme_colorItems;
+
+    .header {
+      background: $lightTheme_backgroundHeader;
+
+      &__logo {
+        color: $lightTheme_colorHeaderLogo;
+      }
+
+      &__list {
+        &-submenu {
+          background: $lightTheme_backgroundSubmenuHeader;
+
+          &::before {
+            background: $lightTheme_backgroundSubmenuHeader;
+          }
+
+          &-link {
+            color: $lightTheme_colorLinksSubmenuHeader;
+
+            &:hover {
+              background: $lightTheme_backgroundActiveLinksSubmenuHeader;
+            }
+          }
+        }
+
+        &-create {
+          background: $lightTheme_backgroundCreateBtn;
+          color: $lightTheme_colorCreateBtn;
+        }
+
+        &-avatar-block {
+          box-shadow: $lightTheme_boxShadowAvatarHeader;
+        }
+
+        &-link {
+          &:not([class*=header__list-create]) {
+            color: $lightTheme_colorHeaderLinks;
+
+            &:hover {
+              color: $lightTheme_colorHoverHeaderLinks;
+            }
+          }
+        }
+      }
+    }
+
+    .auth {
+      &__additionally {
+        &-link {
+          color: $lightTheme_colorAuthAdditionallyLink;
+        }
+      }
+
+      &__form {
+        &-input {
+          background: $lightTheme_backgroundAuthInput;
+          color: $lightTheme_colorAuthInput;
+        }
+
+        &-submit {
+          background: $lightTheme_backgroundAuthSubmit;
+          color: $lightTheme_colorAuthSubmit;
+        }
+      }
+    }
+
+    .post {
+      background: $lightTheme_backgroundPost;
+
+      &__image {
+        background-color: $lightTheme_backgroundBlockImagePost;
+      }
+
+      &__message {
+        color: $lightTheme_colorMessagePost;
+      }
+
+      &__edit {
+        color: $lightTheme_colorEditPost;
+      }
+
+      &__delete {
+        color: $lightTheme_colorRemovePost;
+      }
+
+      &__like {
+        background: $lightTheme_backgroundLikePost;
+        color: $lightTheme_colorDisabledLikePost;
+      }
+
+      &__user {
+        &-name-link {
+          color: $lightTheme_colorItems;
+        }
+      }
+
+      &__main {
+        border-top: 1px solid $lightTheme_borderColorPost;
+        border-bottom: 1px solid $lightTheme_borderColorPost;
+      }
+    }
+
+    .alert {
+      &--success {
+        &::before {
+          background: linear-gradient(to right, $lightTheme_colorAlertSuccess, transparent, transparent);
+        }
+
+        .alert__title {
+          color: $lightTheme_colorAlertSuccess;
+        }
+      }
+
+      &--error {
+        &::before {
+          background: linear-gradient(to right, $lightTheme_colorAlertError, transparent, transparent);
+        }
+
+        .alert__title {
+          color: $lightTheme_colorAlertError;
+        }
+      }
+
+      &--info {
+        &::before {
+          background: linear-gradient(to right, $lightTheme_colorAlertInfo, transparent, transparent);
+        }
+
+        .alert__title {
+          color: $lightTheme_colorAlertInfo;
+        }
+      }
+
+      &--warning {
+        &::before {
+          background: linear-gradient(to right, $lightTheme_colorAlertWarning, transparent, transparent);
+        }
+
+        .alert__title {
+          color: $lightTheme_colorAlertWarning;
+        }
+      }
+
+      &__inner {
+        background: $lightTheme_backgroundAlert;
+      }
+
+      &__desc {
+        color: $lightTheme_colorAlertDesc;
+      }
+    }
+
+    .form-create {
+      &__files {
+        &-name {
+          background: $lightTheme_backgroundAreaFileName;
+        }
+
+        &-remove {
+          background: $lightTheme_backgroundRemoveButton;
+
+          &::before,
+          &::after {
+            background: $lightTheme_colorRemoveButton;
+          }
+        }
+      }
+
+      &__area-file {
+        border: 2px dashed $lightTheme_borderColorAreaFile;
+
+        &--success {
+          border-color: $lightTheme_borderColorSuccessFile;
+
+          &>span {
+            color: $lightTheme_colorSuccessFile;
+          }
+        }
+      }
+
+      &__file-text {
+        color: $lightTheme_colorDisabledFile;
+      }
+
+      &__input {
+        background: $lightTheme_backgroundInputFormCreate;
+        color: $lightTheme_colorInputFormCreate;
+
+        &::placeholder {
+          color: $lightTheme_colorPlaceholderInputFormCreate;
+        }
+
+        &:focus {
+          box-shadow: $lightTheme_boxShadowActiveInput;
+        }
+      }
+
+      &__submit {
+        background: $lightTheme_backgroundSubmitFromCreate;
+        color: $lightTheme_colorSubmitFromCreate;
+      }
+    }
+
+    .user-page {
+      &__navbar {
+        &-list {
+          &-link {
+            color: $lightTheme_colorLinksNavbarUserPage;
+          }
+        }
+      }
+
+      &__info {
+        background: $lightTheme_backgroundHeaderUserPage;
+      }
+
+      &__main {
+        background: $lightTheme_backgroundMainUserPage;
+      }
+    }
+
+    .user-info {
+      &__col {
+        &:nth-child(even) {
+          background: $lightTheme_backgroundEvenColUserInfo;
+        }
+      }
+
+      &__desc {
+        color: $lightTheme_colorDescColUserInfo;
+      }
+    }
+
+    .user-form {
+      &__area-file {
+        border: 2px dashed $lightTheme_borderColorAreaFile;
+
+        &--success {
+          border-color: $lightTheme_borderColorSuccessFile;
+
+          &>span {
+            color: $lightTheme_colorSuccessFile;
+          }
+        }
+      }
+
+      &__file {
+        &-text {
+          color: $lightTheme_colorDisabledFile;
+        }
+      }
+
+      &__subtitle {
+        color: $lightTheme_colorUserFormSubtitle;
+      }
+
+      &__input {
+        background: $lightTheme_backgroundInputSettingsUser;
+        color: $lightTheme_colorInputSettingsUser;
+
+        &:focus {
+          background: $lightTheme_backgroundFocusInputSettingsUser;
+        }
+
+        &::placeholder {
+          color: $lightTheme_colorPlaceholderInputSettingsUser;
+        }
+      }
+
+      &__submit {
+        background: $lightTheme_backgroundSubmitSettingsUser;
+        color: $lightTheme_colorSubmitSettingsUser;
+      }
+
+      &__radio {
+        &:checked+span::before {
+          background: $lightTheme_backgroundRadioDots;
+        }
+
+        &-text {
+          &::before {
+            border: 2px solid $lightTheme_colorBorderRadioDots;
+          }
+        }
+      }
+    }
+
+    .show-full {
+      &__area {
+        &::before {
+          background: $lightTheme_backgroundShowFullArea;
+        }
+      }
+
+      &__btn {
+        color: $lightTheme_colorShowAlsoBtn;
+      }
+    }
+
+    .active-link {
+      color: $lightTheme_colorHoverHeaderLinks;
+    }
+
+    .active-like {
+      background: $lightTheme_backgroundLikeActivePost;
+      color: $lightTheme_colorLikeActivePost;
+
+      &>span {
+        background: $lightTheme_backgroundCountLikePost;
+        color: $lightTheme_colorCountLikePost;
+      }
+    }
+
+    .active-user-link {
+      color: $lightTheme_colorActiveLinksNavbarUserPage;
+
+      &::after {
+        background: $lightTheme_backgroundActiveLinksNavbarUserPage;
+      }
+    }
+  }
+}

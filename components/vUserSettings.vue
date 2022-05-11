@@ -6,6 +6,7 @@
       enctype="multipart/form-data"
       @submit.prevent="changeSettings"
     >
+      <h4 class="user-form__subtitle">Пользовательские данные</h4>
       <div class="user-form__field">
         <h3 class="user-form__field-title">Имя</h3>
         <input
@@ -51,7 +52,34 @@
           <span class="user-form__file-text">{{ textAreaFile }}</span>
         </label>
       </div>
-      <div class="user-form__field user-form__field-center">
+      <h4 class="user-form__subtitle">Тема сайта</h4>
+      <div class="user-form__field user-form__field-row-center">
+        <label class="user-form__label-theme" for="darkTheme">
+          <input
+            class="user-form__radio"
+            type="radio"
+            name="theme"
+            value="dark"
+            id="darkTheme"
+            :checked="theme === 'dark'"
+            @change="setTheme('dark')"
+          />
+          <span class="user-form__radio-text">Темная</span>
+        </label>
+        <label class="user-form__label-theme" for="lightTheme">
+          <input
+            class="user-form__radio"
+            type="radio"
+            name="theme"
+            value="light"
+            id="lightTheme"
+            :checked="theme === 'light'"
+            @change="setTheme('light')"
+          />
+          <span class="user-form__radio-text">Светлая</span>
+        </label>
+      </div>
+      <div class="user-form__field user-form__field-row-center">
         <button class="user-form__submit" type="submit">Изменить</button>
       </div>
     </form>
@@ -70,6 +98,7 @@ export default {
       avatar: {
         file: {},
       },
+      theme: "dark",
       textAreaFile: "Загрузить аватар",
       File: Object,
     };
@@ -79,16 +108,21 @@ export default {
       minLength: minLength(6),
     },
     email: {
-      email
+      email,
     },
     password: {
-      minLength: minLength(6)
+      minLength: minLength(6),
     },
   },
   mounted() {
     this.File = File;
+    this.theme = localStorage.getItem("theme");
   },
   methods: {
+    setTheme(theme) {
+      this.theme = theme;
+      document.body.dataset.theme = theme;
+    },
     loadFile(e) {
       if (window.FileReader) {
         const target = e.currentTarget;
@@ -126,12 +160,11 @@ export default {
     },
     async changeSettings() {
       try {
-        this.$v.$touch();
+        localStorage.setItem("theme", this.theme);
 
-        if (
-          !this.$v.$invalid ||
-          this.avatar.file instanceof File
-        ) {
+        this.$v.$touch();
+        
+        if (!this.$v.$invalid || this.avatar.file instanceof File) {
           const fd = new FormData();
           const token = this.$store.getters["auth/getToken"];
 

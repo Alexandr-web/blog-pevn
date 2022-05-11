@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300&family=Raleway:wght@300;500;700&family=Roboto:wght@300;400&display=swap');
 @import "../../node_modules/normalize.css/normalize.css";
 @import "./_vars";
+@import "./_theme";
 
 *,
 *::after,
@@ -16,8 +17,6 @@
 
 body {
   @extend %roboto-400;
-  background: $darkTheme_backgroundPage;
-  color: $darkTheme_colorItems;
 }
 
 img {
