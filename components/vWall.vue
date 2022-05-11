@@ -9,6 +9,7 @@
         @setAlert="callAlert"
       />
     </ul>
+    <button class="show-also-btn" @click="showAlso" :disabled="pendingPosts" v-if="showBtn">Показать еще</button>
   </div>
 </template>
 
@@ -22,18 +23,46 @@ export default {
   data() {
     return {
       posts: [],
+      numberPostsOnScreen: 6,
+      activeCount: 0,
+      pendingPosts: false,
+      showBtn: true
     };
   },
   async fetch() {
     try {
-      const res = await this.$store.dispatch("post/asyncPosts");
+      const fd = {
+        count: this.activeCount,
+        size: this.numberPostsOnScreen
+      }
+      const res = await this.$store.dispatch("post/getSlicePosts", fd);
 
-      this.posts = res.ok ? res.posts.reverse() : [];
+      this.showBtn = !res.end;
+      this.posts = res.posts;
+      this.activeCount += 1;
     } catch (err) {
       throw err;
     }
   },
   methods: {
+    showAlso() {
+      const fd = {
+        count: this.activeCount,
+        size: this.numberPostsOnScreen
+      }
+      const res = this.$store.dispatch("post/getSlicePosts", fd);
+
+      this.pendingPosts = true;
+
+      res.then(({ posts, end }) => {
+        this.pendingPosts = false;
+        this.showBtn = !end;
+        this.activeCount += 1;
+        this.posts = this.posts.concat(posts);
+      }).catch(err => {
+        throw err;
+      });
+    },
     async like(postId) {
       try {
         const token = this.$store.getters["auth/getToken"];

@@ -123,7 +123,7 @@ export default {
   methods: {
     getValidDate(dateStr) {
       const date = new Date(dateStr);
-
+      
       return `
       ${date.toLocaleDateString()}, 
       ${date.getHours() >= 9 ? date.getHours() : "0" + date.getHours()}:${

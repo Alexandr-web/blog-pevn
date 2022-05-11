@@ -20,5 +20,6 @@ router.post("/create", isAuth, upload.any("images"), postController.create);
 router.post("/like", isAuth, postController.setLike);
 router.post("/edit/:id", isAuth, upload.any("files"), postController.edit);
 router.delete("/remove/:id", isAuth, postController.remove);
+router.post("/pagination", postController.getSlicePosts);
 
 module.exports = router;

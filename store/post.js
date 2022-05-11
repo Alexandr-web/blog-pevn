@@ -17,6 +17,23 @@ export default {
       }
     },
 
+    async getSlicePosts({}, fd) {
+      try {
+        const res = await fetch(`${host}/post/pagination`, {
+          method: "POST",
+          headers: {
+            "Accept-Type": "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(fd)
+        });
+
+        return res.json();
+      } catch(err) {
+        throw err;
+      }
+    },
+
     async asyncPost({}, id) {
       try {
         const res = await fetch(`${host}/post/${id}`, {

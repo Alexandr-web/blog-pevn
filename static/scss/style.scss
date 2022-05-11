@@ -215,6 +215,7 @@
 .wall {
   display: flex;
   flex-direction: column;
+  padding: 25px 0;
 }
 
 .posts {
@@ -222,7 +223,6 @@
   flex-direction: column;
   width: 800px;
   margin: 0 auto;
-  padding: 25px 0;
 }
 
 .post {
@@ -862,14 +862,17 @@
   opacity: 1;
 }
 
-@keyframes showTop {
-  0% {
-    opacity: 0;
-    transform: translateY(-15px);
-  }
-  100% {
+.show-also-btn {
+  cursor: pointer;
+  background: none;
+  border-radius: 5px;
+  padding: 10px;
+  opacity: .8;
+  @extend %roboto-300;
+  margin: 15px auto 0;
+
+  &:hover {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -879,6 +882,17 @@
 
 .invalid-bg {
   background: $invalid;
+}
+
+@keyframes showTop {
+  0% {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @import "./_supports";

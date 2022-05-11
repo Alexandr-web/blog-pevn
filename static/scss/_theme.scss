@@ -107,6 +107,11 @@ body {
       }
     }
 
+    .show-also-btn {
+      border: 1px solid $darkTheme_borderColorShowAlsoBtn;
+      color: $darkTheme_colorShowAlsoBtn;
+    }
+
     .alert {
       &--success {
         &::before {
@@ -374,6 +379,11 @@ body {
           }
         }
       }
+    }
+
+    .show-also-btn {
+      border: 1px solid $lightTheme_borderColorShowAlsoBtn;
+      color: $lightTheme_colorShowAlsoBtn;
     }
 
     .auth {

@@ -13,6 +13,23 @@ class Post {
     }
   }
 
+  async getSlicePosts(req, res) {
+    try {
+      const { size, count } = req.body;
+      const posts = await ModelPost.findAll();
+      const start = size * count;
+      const end = start + size;
+      const freshPosts = posts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      const result = freshPosts.slice(start, end);
+
+      return res.status(200).json({ ok: true, posts: result, end: end >= posts.length });
+    } catch(err) {
+      console.log(err);
+
+      return res.status(500).json({ ok: false, message: "Произошла ошибка сервера" });
+    }
+  }
+
   async getOnePost(req, res) {
     try {
       const { id } = req.params;
@@ -22,7 +39,7 @@ class Post {
     } catch(err) {
       console.log(err);
 
-      return res.status(500).json({ ok: false, message: "Произошла ощибка сервера" });
+      return res.status(500).json({ ok: false, message: "Произошла ошибка сервера" });
     }
   }
 
