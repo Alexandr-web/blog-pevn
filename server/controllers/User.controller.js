@@ -1,5 +1,7 @@
 const { User: ModelUser, Post } = require("../models/index");
 const bcrypt = require("bcrypt");
+const fs = require("fs");
+const path = require("path");
 
 class User {
   async update(req, res) {
@@ -30,6 +32,16 @@ class User {
 
         if (req.file) {
           updates.avatar = req.file.filename;
+
+          if (user.avatar.replace(/^\/\_nuxt\/avatars\//, "") !== "user.png") {
+            fs.unlink(path.resolve(__dirname, "../../", "avatars", user.avatar.replace(/^\/\_nuxt\/avatars\//, "")), err => {
+              if (err) {
+                console.log(err);
+
+                return res.status(500).json({ ok: false, message: "Произошла ошибка при удалении фото", status: 500 });
+              }
+            });
+          }
         }
 
         await user.update(updates);
@@ -55,11 +67,34 @@ class User {
         const userPosts = posts.filter(post => post.userId === userId);
         const likesPost = posts.filter(post => post.likes.findIndex(id => id === userId) !== -1);
 
+        if (user.avatar.replace(/^\/\_nuxt\/avatars\//, "") !== "user.png") {
+          fs.unlink(path.resolve(__dirname, "../../", "avatars", user.avatar.replace(/^\/\_nuxt\/avatars\//, "")), err => {
+            if (err) {
+              console.log(err);
+
+              return res.status(500).json({ ok: false, message: "Произошла ошибка при удалении фото", status: 500 });
+            }
+          });
+        }
+
         likesPost.map(async post => {
           await post.update({ likes: post.likes.filter(id => id !== userId) });
           await post.save();
         });
-        userPosts.map(async post => await post.destroy());
+        
+        userPosts.map(async post => {
+          post.images.map(image => {
+            fs.unlink(path.resolve(__dirname, "../../", "postsImages", image.replace(/^\/\_nuxt\/postsImages\//, "")), err => {
+              if (err) {
+                console.log(err);
+
+                return res.status(500).json({ ok: false, message: "Произошла ошибка при удалении фото", status: 500 });
+              }
+            });
+          });
+
+          await post.destroy();
+        });
 
         await user.destroy();
 

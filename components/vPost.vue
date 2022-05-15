@@ -87,9 +87,9 @@ export default {
     return {
       user: {},
       currentUser: {},
-      isValidUser: false,
       images: [],
       pendingRemove: false,
+      isValidUser: false,
     };
   },
   async fetch() {
@@ -151,6 +151,8 @@ export default {
               desc: message,
               show: true,
             });
+
+            this.$router.go(0);
           } else {
             this.$emit("setAlert", {
               type: "error",

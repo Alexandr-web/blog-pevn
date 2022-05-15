@@ -54,7 +54,7 @@ class Auth {
       const { id } = req.params;
       const candidate = await User.findOne({ where: { id } });
       const result = candidate ? candidate.dataValues : {};
-
+      
       return res.status(200).json({ ok: true, user: result });
     } catch (err) {
       console.log(err);

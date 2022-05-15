@@ -80,10 +80,12 @@ export default {
     try {
       const currentUser = await this.$store.dispatch("auth/getUser");
 
-      this.user = {
-        ...currentUser.user,
-        avatar: await getValidURLImageForAvatar(currentUser.user.avatar),
-      };
+      if (currentUser) {
+        this.user = {
+          ...currentUser.user,
+          avatar: await getValidURLImageForAvatar(currentUser.user.avatar),
+        };
+      }
     } catch (err) {
       throw err;
     }

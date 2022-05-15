@@ -48,6 +48,7 @@
             <input
               class="auth__form-input"
               type="password"
+              autocomplete="on"
               placeholder="Пароль"
               name="password"
               v-model="$v.password.$model"
@@ -61,6 +62,7 @@
             <input
               class="auth__form-input"
               type="password"
+              autocomplete="on"
               placeholder="Повторите пароль"
               name="repeatPassword"
               v-model="$v.repeatPassword.$model"

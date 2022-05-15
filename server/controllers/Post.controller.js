@@ -1,4 +1,6 @@
 const { Post: ModelPost } = require("../models/index");
+const fs = require("fs");
+const path = require("path");
 
 class Post {
   async getPost(req, res) {
@@ -109,8 +111,21 @@ class Post {
 
         if (post) {
           const { userId } = post.dataValues;
+          const postImages = post.images;
 
           if (userId === req.userId) {
+            postImages.map(image => {
+              if (!JSON.parse(images).map(val => val.replace(/^\/\_nuxt\/postsImages\//, "")).includes(image)) {
+                fs.unlink(path.resolve(__dirname, "../../", "postsImages", image), err => {
+                  if (err) {
+                    console.log(err);
+        
+                    return res.status(500).json({ ok: false, message: "Произошла ошибка при удалении фото", status: 500 });
+                  }
+                });
+              }
+            });
+
             await post.update({
               images: files.length ? files.map(file => file.filename).concat(JSON.parse(images)) : JSON.parse(images), 
               title, 
@@ -143,8 +158,19 @@ class Post {
 
         if (post) {
           const { userId } = post.dataValues;
+          const postImages = post.images;
 
           if (req.userId === userId) {
+            postImages.map(image => {
+              fs.unlink(path.resolve(__dirname, "../../", "postsImages", image.replace(/^\/\_nuxt\/postsImages\//, "")), err => {
+                if (err) {
+                  console.log(err);
+      
+                  return res.status(500).json({ ok: false, message: "Произошла ошибка при удалении фото", status: 500 });
+                }
+              });
+            });
+
             await post.destroy();
           } else {
             return res.status(403).json({ ok: false, message: "У вас нет доступа для удаления этого поста", status: 403 });

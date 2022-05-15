@@ -30,6 +30,7 @@
         <input
           class="user-form__input"
           type="password"
+          autocomplete="on"
           placeholder="Пароль"
           v-model.trim="$v.password.$model"
         />
