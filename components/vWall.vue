@@ -1,6 +1,6 @@
 <template>
   <div class="wall">
-    <ul class="posts" v-if="posts.length">
+    <ul class="posts wall__block" v-if="posts.length">
       <vPost
         v-for="(post, index) in posts"
         :key="index"
@@ -9,7 +9,15 @@
         @setAlert="callAlert"
       />
     </ul>
-    <button class="show-also-btn" @click="showAlso" :disabled="pendingPosts" v-if="showBtn">Показать еще</button>
+    <div class="wall__block" v-if="showBtn">
+      <button
+        class="show-also-btn"
+        @click="showAlso"
+        :disabled="pendingPosts"
+      >
+        Показать еще
+      </button>
+    </div>
   </div>
 </template>
 
@@ -17,24 +25,21 @@
 import vPost from "@/components/vPost";
 
 export default {
-  components: {
-    vPost,
-  },
   data() {
     return {
       posts: [],
       numberPostsOnScreen: 6,
       activeCount: 0,
       pendingPosts: false,
-      showBtn: true
+      showBtn: false,
     };
   },
   async fetch() {
     try {
       const fd = {
         count: this.activeCount,
-        size: this.numberPostsOnScreen
-      }
+        size: this.numberPostsOnScreen,
+      };
       const res = await this.$store.dispatch("post/getSlicePosts", fd);
 
       this.showBtn = !res.end;
@@ -48,21 +53,24 @@ export default {
     showAlso() {
       const fd = {
         count: this.activeCount,
-        size: this.numberPostsOnScreen
-      }
+        size: this.numberPostsOnScreen,
+      };
       const res = this.$store.dispatch("post/getSlicePosts", fd);
 
       this.pendingPosts = true;
 
-      res.then(({ posts, end }) => {
-        this.pendingPosts = false;
-        this.showBtn = !end;
-        this.activeCount += 1;
-        this.posts = this.posts.concat(posts);
-      }).catch(err => {
-        throw err;
-      });
+      res
+        .then(({ posts, end }) => {
+          this.pendingPosts = false;
+          this.showBtn = !end;
+          this.activeCount += 1;
+          this.posts = this.posts.concat(posts);
+        })
+        .catch((err) => {
+          throw err;
+        });
     },
+
     async like(postId) {
       try {
         const token = this.$store.getters["auth/getToken"];
@@ -85,7 +93,10 @@ export default {
 
     callAlert(options) {
       this.$emit("callAlert", options);
-    }
+    },
+  },
+  components: {
+    vPost,
   },
 };
 </script>

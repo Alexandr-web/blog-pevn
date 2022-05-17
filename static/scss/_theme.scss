@@ -6,6 +6,16 @@ body {
     background: $darkTheme_backgroundPage;
     color: $darkTheme_colorItems;
 
+    .preloader {
+      &::before {
+        border-top: 2px solid $darkTheme_colorFirstCirclePreloader;
+      }
+
+      &::after {
+        border-right: 2px solid $darkTheme_colorSecondCirclePreloader;
+      }
+    }
+
     .header {
       background: $darkTheme_backgroundHeader;
 

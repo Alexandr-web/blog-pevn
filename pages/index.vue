@@ -38,10 +38,6 @@ export default {
       },
     };
   },
-  components: {
-    vWall,
-    vAlert,
-  },
   methods: {
     callAlert(options) {
       this.alertData = options;
@@ -49,6 +45,10 @@ export default {
     hideAlert() {
       this.alertData.show = false;
     }
+  },
+  components: {
+    vWall,
+    vAlert,
   },
 };
 </script>

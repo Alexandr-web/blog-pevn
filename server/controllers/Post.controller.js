@@ -23,7 +23,7 @@ class Post {
       const end = start + size;
       const freshPosts = posts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       const result = freshPosts.slice(start, end);
-
+      
       return res.status(200).json({ ok: true, posts: result, end: end >= posts.length });
     } catch(err) {
       console.log(err);

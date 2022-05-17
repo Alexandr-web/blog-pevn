@@ -39,6 +39,11 @@ export default {
   middleware: "checkAuth",
   validate({ store, params }) {
     const { id } = params;
+
+    if (!/^\d+$/g.test(id)) {
+      return;
+    }
+
     const getCurrentUser = store.dispatch("auth/getUser");
     const getPost = store.dispatch("post/asyncPost", id);
 

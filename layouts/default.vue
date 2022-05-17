@@ -7,21 +7,12 @@
 
 <script>
 import vHeader from "@/components/vHeader";
+import setThemeMixin from "@/mixins/setThemeMixin";
 
 export default {
+  mixins: [setThemeMixin],
   components: {
     vHeader,
-  },
-  mounted() {
-    const theme = localStorage.getItem("theme");
-
-    if (theme) {
-      document.body.dataset.theme = theme;
-    } else {
-      localStorage.setItem("theme", "dark");
-
-      document.body.dataset.theme = "dark";
-    }
   }
 };
 </script>

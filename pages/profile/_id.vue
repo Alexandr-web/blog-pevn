@@ -122,7 +122,13 @@ export default {
     }
   },
   validate({ params, store }) {
-    const getCandidate = store.dispatch("auth/getUser", params.id);
+    const { id } = params;
+
+    if (!/^\d+$/g.test(id)) {
+      return false;
+    }
+
+    const getCandidate = store.dispatch("auth/getUser", id);
 
     return getCandidate
       .then(({ user }) => Boolean(Object.keys(user).length))
