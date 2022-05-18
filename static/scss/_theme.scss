@@ -6,6 +6,12 @@ body {
     background: $darkTheme_backgroundPage;
     color: $darkTheme_colorItems;
 
+    .hamburger {
+      &__line {
+        background: $darkTheme_colorLinesHamburger;
+      }
+    }
+
     .preloader {
       &::before {
         border-top: 2px solid $darkTheme_colorFirstCirclePreloader;
@@ -315,7 +321,7 @@ body {
       }
 
       &__btn {
-        color: $darkTheme_colorShowAlsoBtn;
+        color: $darkTheme_colorShowFullBtn;
       }
     }
 
@@ -345,6 +351,12 @@ body {
   &[data-theme="light"] {
     background: $lightTheme_backgroundPage;
     color: $lightTheme_colorItems;
+
+    .hamburger {
+      &__line {
+        background: $lightTheme_colorLinesHamburger;
+      }
+    }
 
     .header {
       background: $lightTheme_backgroundHeader;
@@ -645,7 +657,7 @@ body {
       }
 
       &__btn {
-        color: $lightTheme_colorShowAlsoBtn;
+        color: $lightTheme_colorShowFullBtn;
       }
     }
 

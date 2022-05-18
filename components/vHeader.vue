@@ -1,5 +1,5 @@
 <template>
-  <header class="header">
+  <header class="header" :class="{ 'header--show': show }">
     <div class="container">
       <nav class="header__nav">
         <nuxt-link class="header__logo" to="/">BlogPevn</nuxt-link>
@@ -69,6 +69,9 @@
 import getValidURLImageForAvatar from "@/getValidURLImageForAvatar";
 
 export default {
+  props: {
+    show: Boolean
+  },
   data() {
     return {
       user: {},

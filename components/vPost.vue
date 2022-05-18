@@ -42,15 +42,17 @@
       </vShowFull>
     </main>
     <footer class="post__footer">
-      <button
-        class="post__btn post__like"
-        :class="{ 'active-like': isCurrentUserLike(post.likes) }"
-        @click="$emit('like', post.id)"
-      >
-        Нравится
-        <span class="post__like-count">{{ post.likes.length }}</span>
-      </button>
-      <div class="post__controls">
+      <div class="post__footer-block">
+        <button
+          class="post__btn post__like"
+          :class="{ 'active-like': isCurrentUserLike(post.likes) }"
+          @click="$emit('like', post.id)"
+        >
+          Нравится
+          <span class="post__like-count">{{ post.likes.length }}</span>
+        </button>
+      </div>
+      <div class="post__controls post__footer-block">
         <nuxt-link
           class="post__btn post__edit"
           :to="`/edit/${post.id}`"
@@ -123,7 +125,7 @@ export default {
   methods: {
     getValidDate(dateStr) {
       const date = new Date(dateStr);
-      
+
       return `
       ${date.toLocaleDateString()}, 
       ${date.getHours() >= 9 ? date.getHours() : "0" + date.getHours()}:${
