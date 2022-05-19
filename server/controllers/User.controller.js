@@ -34,13 +34,17 @@ class User {
           updates.avatar = req.file.filename;
 
           if (user.avatar.replace(/^\/\_nuxt\/avatars\//, "") !== "user.png") {
-            fs.unlink(path.resolve(__dirname, "../../", "avatars", user.avatar.replace(/^\/\_nuxt\/avatars\//, "")), err => {
-              if (err) {
-                console.log(err);
+            const filePath = path.resolve(__dirname, "../../", "avatars", user.avatar.replace(/^\/\_nuxt\/avatars\//, ""));
 
-                return res.status(500).json({ ok: false, message: "Произошла ошибка при удалении фото", status: 500 });
-              }
-            });
+            if (await fs.existsSync(filePath)) {
+              fs.unlink(filePath, err => {
+                if (err) {
+                  console.log(err);
+  
+                  return res.status(500).json({ ok: false, message: "Произошла ошибка при удалении фото", status: 500 });
+                }
+              });
+            }
           }
         }
 
@@ -68,13 +72,17 @@ class User {
         const likesPost = posts.filter(post => post.likes.findIndex(id => id === userId) !== -1);
 
         if (user.avatar.replace(/^\/\_nuxt\/avatars\//, "") !== "user.png") {
-          fs.unlink(path.resolve(__dirname, "../../", "avatars", user.avatar.replace(/^\/\_nuxt\/avatars\//, "")), err => {
-            if (err) {
-              console.log(err);
+          const filePath = path.resolve(__dirname, "../../", "avatars", user.avatar.replace(/^\/\_nuxt\/avatars\//, ""));
 
-              return res.status(500).json({ ok: false, message: "Произошла ошибка при удалении фото", status: 500 });
-            }
-          });
+          if (await fs.existsSync(filePath)) {
+            fs.unlink(filePath, err => {
+              if (err) {
+                console.log(err);
+  
+                return res.status(500).json({ ok: false, message: "Произошла ошибка при удалении фото", status: 500 });
+              }
+            });
+          }
         }
 
         likesPost.map(async post => {
@@ -83,14 +91,18 @@ class User {
         });
         
         userPosts.map(async post => {
-          post.images.map(image => {
-            fs.unlink(path.resolve(__dirname, "../../", "postsImages", image.replace(/^\/\_nuxt\/postsImages\//, "")), err => {
-              if (err) {
-                console.log(err);
+          post.images.map(async image => {
+            const filePath = path.resolve(__dirname, "../../", "postsImages", image.replace(/^\/\_nuxt\/postsImages\//, ""));
 
-                return res.status(500).json({ ok: false, message: "Произошла ошибка при удалении фото", status: 500 });
-              }
-            });
+            if (await fs.existsSync(filePath)) {
+              fs.unlink(filePath, err => {
+                if (err) {
+                  console.log(err);
+  
+                  return res.status(500).json({ ok: false, message: "Произошла ошибка при удалении фото", status: 500 });
+                }
+              });
+            }
           });
 
           await post.destroy();

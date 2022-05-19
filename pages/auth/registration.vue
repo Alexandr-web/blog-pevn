@@ -175,7 +175,7 @@ export default {
             this.alertData = {
               type: "error",
               title: "Ошибка",
-              desc: "Произошла ошибка сервера, попробуйте перезагрузить сайт",
+              desc: `Произошла ошибка сервера: ${err}`,
               show: true,
             };
 

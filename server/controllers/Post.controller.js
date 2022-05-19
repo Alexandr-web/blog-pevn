@@ -23,9 +23,9 @@ class Post {
       const end = start + size;
       const freshPosts = posts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       const result = freshPosts.slice(start, end);
-      
+
       return res.status(200).json({ ok: true, posts: result, end: end >= posts.length });
-    } catch(err) {
+    } catch (err) {
       console.log(err);
 
       return res.status(500).json({ ok: false, message: "Произошла ошибка сервера" });
@@ -38,7 +38,7 @@ class Post {
       const post = await ModelPost.findOne({ where: { id } });
 
       return res.status(200).json({ ok: true, post: post || {} });
-    } catch(err) {
+    } catch (err) {
       console.log(err);
 
       return res.status(500).json({ ok: false, message: "Произошла ошибка сервера" });
@@ -114,21 +114,25 @@ class Post {
           const postImages = post.images;
 
           if (userId === req.userId) {
-            postImages.map(image => {
+            postImages.map(async image => {
               if (!JSON.parse(images).map(val => val.replace(/^\/\_nuxt\/postsImages\//, "")).includes(image)) {
-                fs.unlink(path.resolve(__dirname, "../../", "postsImages", image), err => {
-                  if (err) {
-                    console.log(err);
-        
-                    return res.status(500).json({ ok: false, message: "Произошла ошибка при удалении фото", status: 500 });
-                  }
-                });
+                const filePath = path.resolve(__dirname, "../../", "postsImages", image);
+
+                if (await fs.existsSync(filePath)) {
+                  fs.unlink(filePath, err => {
+                    if (err) {
+                      console.log(err);
+
+                      return res.status(500).json({ ok: false, message: "Произошла ошибка при удалении фото", status: 500 });
+                    }
+                  });
+                }
               }
             });
 
             await post.update({
-              images: files.length ? files.map(file => file.filename).concat(JSON.parse(images)) : JSON.parse(images), 
-              title, 
+              images: files.length ? files.map(file => file.filename).concat(JSON.parse(images)) : JSON.parse(images),
+              title,
               message
             });
             await post.save();
@@ -143,7 +147,7 @@ class Post {
       } else {
         return res.status(403).json({ ok: false, message: "Для выполнения данной операции вам необходимо авторизоваться", status: 403 });
       }
-    } catch(err) {
+    } catch (err) {
       console.log(err);
 
       return res.status(500).json({ ok: false, message: "Произошла ошибка сервера", status: 500 });
@@ -161,14 +165,18 @@ class Post {
           const postImages = post.images;
 
           if (req.userId === userId) {
-            postImages.map(image => {
-              fs.unlink(path.resolve(__dirname, "../../", "postsImages", image.replace(/^\/\_nuxt\/postsImages\//, "")), err => {
-                if (err) {
-                  console.log(err);
-      
-                  return res.status(500).json({ ok: false, message: "Произошла ошибка при удалении фото", status: 500 });
-                }
-              });
+            postImages.map(async image => {
+              const filePath = path.resolve(__dirname, "../../", "postsImages", image.replace(/^\/\_nuxt\/postsImages\//, ""));
+              
+              if (await fs.existsSync(filePath)) {
+                fs.unlink(filePath, err => {
+                  if (err) {
+                    console.log(err);
+  
+                    return res.status(500).json({ ok: false, message: "Произошла ошибка при удалении фото", status: 500 });
+                  }
+                });
+              }
             });
 
             await post.destroy();
@@ -183,7 +191,7 @@ class Post {
       } else {
         return res.status(403).json({ ok: false, message: "Для выполнения данной операции вам необходимо авторизоваться", status: 403 });
       }
-    } catch(err) {
+    } catch (err) {
       console.log(err);
 
       return res.status(500).json({ ok: false, message: "Произошла ошибка сервера", status: 500 });
