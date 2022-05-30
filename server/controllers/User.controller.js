@@ -13,13 +13,7 @@ class User {
         const user = await ModelUser.findOne({ where: { id: userId } });
 
         for (let key in body) {
-          if (key !== "password") {
-            updates[key] = body[key];
-          }
-
-          if (key === "password") {
-            updates[key] = await bcrypt.hash(body[key], 7);
-          }
+          updates[key] = key !== "password" ? body[key] : await bcrypt.hash(body[key], 7);
         }
 
         if (updates.email) {
