@@ -30,13 +30,14 @@
 </template>
 
 <script>
-import getValidURLImageForImagesPost from "@/getValidURLImageForImagesPost/index";
+import getValidURLImageForImagesPostMixin from "@/mixins/getValidURLImageForImagesPostMixin";
 import vAlert from "@/components/vAlert";
 import vFormEditPost from "@/components/vFormEditPost";
 
 export default {
   layout: "default",
   middleware: "checkAuth",
+  mixins: [getValidURLImageForImagesPostMixin],
   validate({ store, params }) {
     const { id } = params;
 
@@ -80,7 +81,7 @@ export default {
 
       if (getPost.post.images.length) {
         getPost.post.images.map((image) => {
-          getValidURLImageForImagesPost(image)
+          this.getValidURLImageForImagesPost(image)
             .then((val) => this.files.push(val))
             .catch((err) => {
               throw err;

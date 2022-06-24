@@ -12,12 +12,6 @@
 
 <script>
 export default {
-  props: {
-    userId: {
-      type: Number,
-      required: true,
-    },
-  },
   data() {
     return {
       pending: false,

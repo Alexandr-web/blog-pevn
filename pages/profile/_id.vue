@@ -16,62 +16,16 @@
         />
       </ul>
       <div class="user-page">
-        <header class="user-page__header">
-          <div class="user-page__info">
-            <div class="user-page__info-avatar">
-              <img
-                class="user-page__info-avatar-image"
-                :src="user.avatar"
-                alt=""
-              />
-            </div>
-            <div class="user-page__info-person">
-              <h2 class="user-page__info-name">{{ user.name }}</h2>
-              <h3 class="user-page__info-email">{{ user.email }}</h3>
-            </div>
-          </div>
-          <nav class="user-page__navbar" v-if="isCurrentUser">
-            <ul class="user-page__navbar-list">
-              <li class="user-page__navbar-list-item">
-                <nuxt-link
-                  class="user-page__navbar-list-link"
-                  :to="`/profile/${user.id}?tab=info`"
-                  exact-active-class="active-user-link"
-                >
-                  Личная информация
-                </nuxt-link>
-              </li>
-              <li class="user-page__navbar-list-item" v-if="isCurrentUser">
-                <nuxt-link
-                  class="user-page__navbar-list-link"
-                  :to="`/profile/${user.id}?tab=settings`"
-                  exact-active-class="active-user-link"
-                >
-                  Настройки
-                </nuxt-link>
-              </li>
-              <li class="user-page__navbar-list-item" v-if="isCurrentUser">
-                <nuxt-link
-                  class="user-page__navbar-list-link"
-                  :to="`/profile/${user.id}?tab=delete`"
-                  exact-active-class="active-user-link"
-                >
-                  Удаление аккаунта
-                </nuxt-link>
-              </li>
-            </ul>
-          </nav>
-        </header>
+        <vUserHeader :user="user" :isCurrentUser="isCurrentUser" />
         <main class="user-page__main" v-if="isCurrentUser">
-          <vUserInfo v-if="tab === 'info'" :user="user" />
+          <vUserInfo v-if="$route.query.tab === 'info'" :user="user" />
           <vUserSettings
-            v-if="tab === 'settings' && isCurrentUser"
+            v-if="$route.query.tab === 'settings' && isCurrentUser"
             @setAlert="setAlert"
           />
           <vUserDelete
-            v-if="tab === 'delete' && isCurrentUser"
+            v-if="$route.query.tab === 'delete' && isCurrentUser"
             @setAlert="setAlert"
-            :userId="user.id"
           />
         </main>
       </div>
@@ -84,7 +38,7 @@ import vUserInfo from "@/components/vUserInfo";
 import vUserSettings from "@/components/vUserSettings";
 import vUserDelete from "@/components/vUserDelete";
 import vAlert from "@/components/vAlert";
-import getValidURLImageForAvatar from "@/getValidURLImageForAvatar/index";
+import vUserHeader from "@/components/vUserHeader";
 
 export default {
   watchQuery: ["tab"],
@@ -100,23 +54,17 @@ export default {
       },
     };
   },
-  async asyncData({ params: { id }, query: { tab }, store }) {
+  mixins: [getValidURLImageForAvatarMixin],
+  async asyncData({ store, query: { tab, }, params: { id, }, }) {
     try {
-      const candidate = await store.dispatch("auth/getUser", id);
-      const currentUser = await store.dispatch("auth/getUser");
+      const { ok: completeUserById, user: userById } = await store.dispatch("auth/getUser", id);
+      const { ok: completeCurrentUser, user: currentUser, } = await store.dispatch("auth/getUser");
 
       return {
+        user: completeUserById ? userById : {},
+        isCurrentUser: completeCurrentUser ? currentUser.id === userById.id : false,
         tab,
-        user: candidate.ok
-          ? {
-              ...candidate.user,
-              avatar: await getValidURLImageForAvatar(candidate.user.avatar),
-            }
-          : {},
-        isCurrentUser: candidate.ok
-          ? currentUser.user.id === candidate.user.id
-          : false,
-      };
+      }
     } catch (err) {
       throw err;
     }
@@ -154,6 +102,7 @@ export default {
     vUserSettings,
     vUserDelete,
     vAlert,
+    vUserHeader,
   },
 };
 </script>

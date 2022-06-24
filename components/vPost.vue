@@ -74,8 +74,8 @@
 </template>
 
 <script>
-import getValidURLImageForAvatar from "@/getValidURLImageForAvatar/index";
-import getValidURLImageForImagesPost from "@/getValidURLImageForImagesPost/index";
+import getValidURLImageForAvatarMixin from "@/mixins/getValidURLImageForAvatarMixin";
+import getValidURLImageForImagesPostMixin from "@/mixins/getValidURLImageForImagesPostMixin";
 import vShowFull from "@/components/vShowFull";
 
 export default {
@@ -85,6 +85,7 @@ export default {
       required: true,
     },
   },
+  mixins: [getValidURLImageForAvatarMixin, getValidURLImageForImagesPostMixin],
   data() {
     return {
       user: {},
@@ -104,7 +105,7 @@ export default {
 
       if (this.post.images.length) {
         this.post.images.map((image) => {
-          getValidURLImageForImagesPost(image)
+          this.getValidURLImageForImagesPost(image)
             .then((res) => this.images.push(res))
             .catch((err) => {
               throw err;
@@ -115,7 +116,7 @@ export default {
       this.isValidUser = currentUser.user.id === userOfPost.user.id;
       this.user = {
         ...userOfPost.user,
-        avatar: await getValidURLImageForAvatar(userOfPost.user.avatar),
+        avatar: await this.getValidURLImageForAvatar(userOfPost.user.avatar),
       };
       this.currentUser = currentUser.user;
     } catch (err) {

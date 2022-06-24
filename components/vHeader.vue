@@ -66,12 +66,13 @@
 </template>
 
 <script>
-import getValidURLImageForAvatar from "@/getValidURLImageForAvatar";
+import getValidURLImageForAvatarMixin from "@/mixins/getValidURLImageForAvatarMixin";
 
 export default {
   props: {
     show: Boolean
   },
+  mixins: [getValidURLImageForAvatarMixin],
   data() {
     return {
       user: {},
@@ -86,7 +87,7 @@ export default {
       if (currentUser) {
         this.user = {
           ...currentUser.user,
-          avatar: await getValidURLImageForAvatar(currentUser.user.avatar),
+          avatar: await this.getValidURLImageForAvatar(currentUser.user.avatar),
         };
       }
     } catch (err) {
