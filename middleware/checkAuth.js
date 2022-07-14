@@ -1,6 +1,6 @@
 import jwtDecode from "jwt-decode";
 
-export default async ({ store, redirect }) => {
+export default async ({ store, redirect, }) => {
   try {
     store.dispatch("auth/autoLogin");
 
@@ -9,8 +9,8 @@ export default async ({ store, redirect }) => {
     }
 
     const data = jwtDecode(store.getters["auth/getToken"]);
-    const res = await store.dispatch("auth/getUser", data.dataValues.id);
-    
+    const res = await store.dispatch("user/getOne", data.dataValues.id);
+
     if (!Object.keys(res.user).length) {
       store.commit("auth/clearToken");
 
@@ -19,4 +19,4 @@ export default async ({ store, redirect }) => {
   } catch (err) {
     throw err;
   }
-}
+};

@@ -9,13 +9,13 @@ const storage = multer.diskStorage({
   },
   filename(req, file, cb) {
     cb(null, `${Date.now()}-${file.originalname}`);
-  }
+  },
 });
 
-const upload = multer({ storage });
+const upload = multer({ storage, });
 
-router.get("/", postController.getPost);
-router.get("/:id", postController.getOnePost);
+router.get("/api", postController.getPost);
+router.get("/api/:id", postController.getOnePost);
 router.post("/create", isAuth, upload.any("images"), postController.create);
 router.post("/like", isAuth, postController.setLike);
 router.post("/edit/:id", isAuth, upload.any("files"), postController.edit);

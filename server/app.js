@@ -3,20 +3,17 @@ const app = express();
 const bodyParser = require("body-parser");
 const sequelize = require("./db");
 const cors = require("cors");
+const host = require("./host");
 
 const authRouter = require("./routes/auth.router");
 const postRouter = require("./routes/post.router");
 const userRouter = require("./routes/user.router");
 
-import host from "./host";
-
 require("dotenv").config();
 require("./models/index");
 
-app.use(cors({
-  origin : [host],
-}));
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors({ origin: [host], }));
+app.use(bodyParser.urlencoded({ extended: true, }));
 app.use(bodyParser.json());
 
 const connectToDatabase = async () => {
@@ -28,7 +25,7 @@ const connectToDatabase = async () => {
   } catch (err) {
     console.log(err);
   }
-}
+};
 
 connectToDatabase();
 

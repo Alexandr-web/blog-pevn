@@ -9,5 +9,5 @@ export default {
 
       document.body.dataset.theme = "dark";
     }
-  }
-}
+  },
+};

@@ -9,11 +9,18 @@
         />
       </div>
       <div class="user-page__info-person">
-        <h2 class="user-page__info-name">{{ userInfo.name }}</h2>
-        <h3 class="user-page__info-email">{{ userInfo.email }}</h3>
+        <h2 class="user-page__info-name">
+          {{ userInfo.name }}
+        </h2>
+        <h3 class="user-page__info-email">
+          {{ userInfo.email }}
+        </h3>
       </div>
     </div>
-    <nav class="user-page__navbar" v-if="isCurrentUser">
+    <nav
+      v-if="isCurrentUser"
+      class="user-page__navbar"
+    >
       <ul class="user-page__navbar-list">
         <li class="user-page__navbar-list-item">
           <nuxt-link
@@ -24,7 +31,10 @@
             Личная информация
           </nuxt-link>
         </li>
-        <li class="user-page__navbar-list-item" v-if="isCurrentUser">
+        <li
+          v-if="isCurrentUser"
+          class="user-page__navbar-list-item"
+        >
           <nuxt-link
             class="user-page__navbar-list-link"
             :to="`/profile/${userInfo.id}?tab=settings`"
@@ -33,7 +43,10 @@
             Настройки
           </nuxt-link>
         </li>
-        <li class="user-page__navbar-list-item" v-if="isCurrentUser">
+        <li
+          v-if="isCurrentUser"
+          class="user-page__navbar-list-item"
+        >
           <nuxt-link
             class="user-page__navbar-list-link"
             :to="`/profile/${userInfo.id}?tab=delete`"
@@ -48,32 +61,30 @@
 </template>
 
 <script>
-import getValidURLImageForAvatarMixin from "@/mixins/getValidURLImageForAvatarMixin";
+  import getValidURLImageForAvatarMixin from "@/mixins/getValidURLImageForAvatarMixin";
 
-export default {
-  mixins: [getValidURLImageForAvatarMixin],
-  props: {
-    isCurrentUser: {
-      type: Boolean,
-      required: true,
+  export default {
+    name: "UserHeaderComponent",
+    mixins: [getValidURLImageForAvatarMixin],
+    props: {
+      isCurrentUser: {
+        type: Boolean,
+        required: true,
+      },
+      user: {
+        type: Object,
+        required: true,
+      },
     },
-    user: {
-      type: Object,
-      required: true,
+    data() {
+      return { userInfo: {}, };
     },
-  },
-  data() {
-    return {
-      userInfo: {},
-    }
-  },
-  async fetch() {
-    try {
-      Object.keys(this.user).map(key => this.userInfo[key] = this.user[key]);
-      this.userInfo.avatar = await this.getValidURLImageForAvatar(this.userInfo.avatar);
-    } catch (err) {
-      throw err;
-    }
-  }
-}
+    async fetch() {
+      this.getValidURLImageForAvatar(this.user.avatar).then((url) => {
+        this.userInfo = { ...this.user, avatar: url, };
+      }).catch((err) => {
+        throw err;
+      });
+    },
+  };
 </script>

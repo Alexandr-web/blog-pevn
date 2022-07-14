@@ -7,15 +7,15 @@
   >
     <div class="form-create__field">
       <input
+        v-model.trim="title"
         class="form-create__input form-create__input-title"
         type="text"
         placeholder="Заголовок"
-        v-model.trim="post.title"
       />
     </div>
     <div class="form-create__field">
       <textarea
-        v-model.trim="post.message"
+        v-model.trim="message"
         placeholder="Описание"
         class="form-create__input form-create__input-message"
       ></textarea>
@@ -36,13 +36,16 @@
         />
         <span class="form-create__file-text">{{ textAreaFile }}</span>
         <img
+          v-if="files.length"
           class="form-create__check-mark"
           :src="require('@/static/icons/check.svg')"
           alt=""
-          v-if="files.length"
         />
       </label>
-      <ul class="form-create__files" v-if="files.length">
+      <ul
+        v-if="files.length"
+        class="form-create__files"
+      >
         <li
           v-for="(file, index) in files"
           :key="index"
@@ -54,8 +57,8 @@
             alt=""
           />
           <div
-            class="form-create__files-name"
             v-if="file.file"
+            class="form-create__files-name"
             :title="file.file.name"
           >
             {{ file.file.name }}
@@ -69,7 +72,11 @@
       </ul>
     </div>
     <div class="form-create__field form-create__field-center">
-      <button class="form-create__submit" type="submit" :disabled="pending">
+      <button
+        class="form-create__submit"
+        type="submit"
+        :disabled="pending"
+      >
         Изменить
       </button>
     </div>
@@ -77,77 +84,84 @@
 </template>
 
 <script>
-export default {
-  props: {
-    post: {
-      type: Object,
-      required: true,
+  export default {
+    name: "FormEditComponent",
+    props: {
+      post: {
+        type: Object,
+        required: true,
+      },
+      pending: {
+        type: Boolean,
+        required: true,
+      },
+      files: {
+        type: Array,
+        required: true,
+      },
     },
-    pending: {
-      type: Boolean,
-      required: true,
+    data() {
+      return {
+        textAreaFile: "Загрузить изображения",
+        title: "",
+        message: "",
+      };
     },
-    files: {
-      type: Array,
-      required: true
-    }
-  },
-  data() {
-    return {
-      textAreaFile: "Загрузить изображения",
-    };
-  },
-  methods: {
-    loadImages(e) {
-      if (window.FileReader) {
-        const target = e.currentTarget;
-        const files = target.files;
+    mounted() {
+      this.title = this.post.title;
+      this.message = this.post.message;
+    },
+    methods: {
+      loadImages(e) {
+        if (window.FileReader) {
+          const target = e.currentTarget;
+          const files = target.files;
 
-        if (files && files.length) {
-          [...files].map((file) => {
-            const reader = new FileReader();
-            const image = {
-              file,
-              src: "",
-            };
+          if (files && files.length) {
+            [...files].map((file) => {
+              const reader = new FileReader();
+              const image = {
+                file,
+                src: "",
+              };
 
-            reader.readAsDataURL(file);
-            reader.addEventListener("load", () => {
-              this.$emit("addFile", {
-                ...image,
-                src: reader.result,
+              reader.readAsDataURL(file);
+              reader.addEventListener("load", () => {
+                this.$emit("addFile", {
+                  ...image,
+                  src: reader.result,
+                });
+
+                this.textAreaFile = `Загруженных файлов: ${
+                  this.files.filter((f) => typeof f !== "string").length
+                }`;
               });
+              reader.addEventListener("error", () => {
+                this.$emit("setAlert", {
+                  type: "error",
+                  title: "Ошибка",
+                  desc: `Произошла ошибка: ${reader.error}`,
+                  show: true,
+                });
 
-              this.textAreaFile = `Загруженных файлов: ${
-                this.files.filter((file) => typeof file !== "string").length
-              }`;
-            });
-            reader.addEventListener("error", () => {
-              this.$emit("setAlert", {
-                type: "error",
-                title: "Ошибка",
-                desc: `Произошла ошибка: ${reader.error}`,
-                show: true,
+                throw reader.error;
               });
-
-              throw reader.error;
             });
+          }
+        } else {
+          this.$emit("setAlert", {
+            type: "error",
+            title: "Ошибка",
+            desc: "Ваш браузер устарел и не поддерживает FileReader, пожалуйста установите современный и повторите попытку",
+            show: true,
           });
-        }
-      } else {
-        this.$emit("setAlert", {
-          type: "error",
-          title: "Ошибка",
-          desc: "Ваш браузер устарел и не поддерживает FileReader, пожалуйста установите современный и повторите попытку",
-          show: true,
-        });
 
-        this.textAreaFile = "Повторите попытку";
-      }
+          this.textAreaFile = "Повторите попытку";
+        }
+      },
+      removeFile(index) {
+        this.$emit("setFiles", this.files.filter((file, idx) => idx !== index));
+      },
     },
-    removeFile(index) {
-      this.$emit("setFiles", this.files.filter((file, idx) => idx !== index));
-    },
-  },
-};
+  };
 </script>

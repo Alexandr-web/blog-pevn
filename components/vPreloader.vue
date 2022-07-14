@@ -1,14 +1,18 @@
 <template>
-  <div class="preloader" v-if="loading"></div>
+  <div
+    v-if="loading"
+    class="preloader"
+  ></div>
 </template>
 
 <script>
-export default {
-  props: {
-    loading: {
-      type: Boolean,
-      required: true
-    }
-  }
-}
+  export default {
+    name: "PreloaderComponent",
+    props: {
+      loading: {
+        type: Boolean,
+        required: true,
+      },
+    },
+  };
 </script>

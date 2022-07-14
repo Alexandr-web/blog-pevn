@@ -15,99 +15,102 @@
           @hide="hideAlert"
         />
       </div>
-      <h1 class="title">Создание поста</h1>
+      <h1 class="title">
+        Создание поста
+      </h1>
       <vFormCreatePost
+        :pending="pending"
         @setAlert="setAlert"
         @createPost="createPost"
-        :pending="pending"
       />
     </div>
   </div>
 </template>
 
 <script>
-import vFormCreatePost from "@/components/vFormCreatePost";
-import vAlert from "@/components/vAlert";
+  import vFormCreatePost from "@/components/vFormCreatePost";
+  import vAlert from "@/components/vAlert";
 
-export default {
-  layout: "default",
-  middleware: "checkAuth",
-  data() {
-    return {
-      pending: false,
-      alertData: {
-        type: "",
-        title: "",
-        desc: "",
-        show: false,
+  export default {
+    name: "CreatePostPage",
+    components: {
+      vFormCreatePost,
+      vAlert,
+    },
+    layout: "default",
+    middleware: "checkAuth",
+    data() {
+      return {
+        pending: false,
+        alertData: {
+          type: "",
+          title: "",
+          desc: "",
+          show: false,
+        },
+      };
+    },
+    methods: {
+      setAlert(options) {
+        this.alertData = options;
       },
-    };
-  },
-  components: {
-    vFormCreatePost,
-    vAlert,
-  },
-  methods: {
-    setAlert(options) {
-      this.alertData = options;
-    },
-    createPost({ title, message, files }) {
-      if ([title, message, files.length].some(Boolean)) {
-        const fd = new FormData();
-        const token = this.$store.getters["auth/getToken"];
+      createPost({ title, message, files, }) {
+        if ([title, message, files.length].some(Boolean)) {
+          const fd = new FormData();
+          const token = this.$store.getters["auth/getToken"];
 
-        fd.append("title", title);
-        fd.append("message", message);
+          fd.append("title", title);
+          fd.append("message", message);
 
-        files.map((image) => fd.append("files", image.file));
+          files.map((image) => fd.append("files", image.file));
 
-        const res = this.$store.dispatch("post/create", { fd, token });
+          const res = this.$store.dispatch("post/create", { fd, token, });
 
-        this.pending = true;
+          this.pending = true;
 
-        res
-          .then(({ status, message }) => {
-            this.pending = false;
-            
-            if (![400, 500, 404, 403].includes(status)) {
+          res
+            .then(({ status, message: m, }) => {
+              this.pending = false;
+              
+              if (![400, 500, 404, 403].includes(status)) {
+                this.setAlert({
+                  type: "success",
+                  title: "Успешно",
+                  desc: m,
+                  show: true,
+                });
+
+                this.$router.push("/");
+              } else {
+                this.setAlert({
+                  type: "error",
+                  title: "Ошибка",
+                  desc: m,
+                  show: true,
+                });
+              }
+            })
+            .catch((err) => {
               this.setAlert({
-                type: "success",
-                title: "Успешно",
-                desc: message,
-                show: true,
-              });
-
-              this.$router.push("/");
-            } else {
-              this.setAlert({
-                type: "error",
                 title: "Ошибка",
-                desc: message,
+                type: "error",
+                desc: `Произошла ошибка сервера: ${err}`,
                 show: true,
               });
-            }
-          })
-          .catch((err) => {
-            this.setAlert({
-              title: "Ошибка",
-              type: "error",
-              desc: `Произошла ошибка сервера: ${err}`,
-              show: true,
+              throw err;
             });
-            throw err;
+        } else {
+          this.setAlert({
+            title: "Внимание",
+            type: "warning",
+            desc: "Хотя бы одно поле должно быть заполнено",
+            show: true,
           });
-      } else {
-        this.setAlert({
-          title: "Внимание",
-          type: "warning",
-          desc: "Хотя бы одно поле должно быть заполнено",
-          show: true,
-        });
-      }
+        }
+      },
+      hideAlert() {
+        this.alertData.show = false;
+      },
     },
-    hideAlert() {
-      this.alertData.show = false;
-    },
-  },
-};
+  };
 </script>

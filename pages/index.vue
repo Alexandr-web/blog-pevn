@@ -15,40 +15,43 @@
           @hide="hideAlert"
         />
       </div>
-      <h1 class="title">Главная</h1>
+      <h1 class="title">
+        Главная
+      </h1>
       <vWall @callAlert="callAlert" />
     </div>
   </div>
 </template>
 
 <script>
-import vWall from "@/components/vWall";
-import vAlert from "@/components/vAlert";
+  import vWall from "@/components/vWall";
+  import vAlert from "@/components/vAlert";
 
-export default {
-  layout: "default",
-  middleware: "checkAuth",
-  data() {
-    return {
-      alertData: {
-        type: "",
-        title: "",
-        desc: "",
-        show: false,
-      },
-    };
-  },
-  methods: {
-    callAlert(options) {
-      this.alertData = options;
+  export default {
+    name: "WallPage",
+    components: {
+      vWall,
+      vAlert,
     },
-    hideAlert() {
-      this.alertData.show = false;
-    }
-  },
-  components: {
-    vWall,
-    vAlert,
-  },
-};
+    layout: "default",
+    middleware: "checkAuth",
+    data() {
+      return {
+        alertData: {
+          type: "",
+          title: "",
+          desc: "",
+          show: false,
+        },
+      };
+    },
+    methods: {
+      callAlert(options) {
+        this.alertData = options;
+      },
+      hideAlert() {
+        this.alertData.show = false;
+      },
+    },
+  };
 </script>

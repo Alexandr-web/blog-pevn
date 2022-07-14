@@ -1,63 +1,29 @@
-import host from "../server/host";
+const host = require("../server/host");
 
 export default {
   actions: {
     async asyncPosts() {
       try {
-        const res = await fetch(`${host}/post`, {
+        const res = await fetch(`${host}/post/api`, {
           method: "GET",
-          headers: {
-            "Accept-Type": "application/json"
-          }
+          headers: { "Accept-Type": "application/json", },
         });
-        
+
         return res.json();
       } catch (err) {
         throw err;
       }
     },
 
-    async getSlicePosts({}, fd) {
+    async getSlicePosts({ }, fd) {
       try {
         const res = await fetch(`${host}/post/pagination`, {
           method: "POST",
           headers: {
             "Accept-Type": "application/json",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(fd)
-        });
-
-        return res.json();
-      } catch(err) {
-        throw err;
-      }
-    },
-
-    async asyncPost({}, id) {
-      try {
-        const res = await fetch(`${host}/post/${id}`, {
-          method: "GET",
-          headers: {
-            "Accept-Type": "application/json"
-          }
-        });
-
-        return res.json();
-      } catch(err) {
-        throw err;
-      }
-    },
-
-    async create({ }, { fd, token }) {
-      try {
-        const res = await fetch(`${host}/post/create`, {
-          method: "POST",
-          headers: {
-            "Accept-Type": "application/json",
-            Authorization: `Bearer ${token || ""}`
-          },
-          body: fd
+          body: JSON.stringify(fd),
         });
 
         return res.json();
@@ -66,16 +32,46 @@ export default {
       }
     },
 
-    async like({ }, { token, fd }) {
+    async asyncPost({ }, id) {
+      try {
+        const res = await fetch(`${host}/post/api/${id}`, {
+          method: "GET",
+          headers: { "Accept-Type": "application/json", },
+        });
+
+        return res.json();
+      } catch (err) {
+        throw err;
+      }
+    },
+
+    async create({ }, { fd, token, }) {
+      try {
+        const res = await fetch(`${host}/post/create`, {
+          method: "POST",
+          headers: {
+            "Accept-Type": "application/json",
+            Authorization: `Bearer ${token || ""}`,
+          },
+          body: fd,
+        });
+
+        return res.json();
+      } catch (err) {
+        throw err;
+      }
+    },
+
+    async like({ }, { token, fd, }) {
       try {
         const res = await fetch(`${host}/post/like`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "Accept-Type": "application/json",
-            Authorization: `Bearer ${token || ""}`
+            Authorization: `Bearer ${token || ""}`,
           },
-          body: JSON.stringify(fd)
+          body: JSON.stringify(fd),
         });
 
         return res.json();
@@ -84,37 +80,37 @@ export default {
       }
     },
 
-    async edit({}, { token, fd, postId }) {
+    async edit({ }, { token, fd, postId, }) {
       try {
         const res = await fetch(`${host}/post/edit/${postId}`, {
           method: "POST",
           headers: {
             "Accept-Type": "application/json",
-            Authorization: `Bearer ${token || ""}`
+            Authorization: `Bearer ${token || ""}`,
           },
-          body: fd
+          body: fd,
         });
 
         return res.json();
-      } catch(err) {
+      } catch (err) {
         throw err;
       }
     },
 
-    async remove({}, { token, postId }) {
+    async remove({ }, { token, postId, }) {
       try {
         const res = await fetch(`${host}/post/remove/${postId}`, {
           method: "DELETE",
           headers: {
             "Accept-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         return res.json();
-      } catch(err) {
+      } catch (err) {
         throw err;
       }
-    }
-  }
-}
+    },
+  },
+};

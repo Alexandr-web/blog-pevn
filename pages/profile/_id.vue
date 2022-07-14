@@ -16,9 +16,18 @@
         />
       </ul>
       <div class="user-page">
-        <vUserHeader :user="user" :isCurrentUser="isCurrentUser" />
-        <main class="user-page__main" v-if="isCurrentUser">
-          <vUserInfo v-if="$route.query.tab === 'info'" :user="user" />
+        <vUserHeader
+          :user="user"
+          :is-current-user="isCurrentUser"
+        />
+        <main
+          v-if="isCurrentUser"
+          class="user-page__main"
+        >
+          <vUserInfo
+            v-if="$route.query.tab === 'info'"
+            :user="user"
+          />
           <vUserSettings
             v-if="$route.query.tab === 'settings' && isCurrentUser"
             @setAlert="setAlert"
@@ -34,75 +43,75 @@
 </template>
 
 <script>
-import vUserInfo from "@/components/vUserInfo";
-import vUserSettings from "@/components/vUserSettings";
-import vUserDelete from "@/components/vUserDelete";
-import vAlert from "@/components/vAlert";
-import vUserHeader from "@/components/vUserHeader";
+  import vUserInfo from "@/components/vUserInfo";
+  import vUserSettings from "@/components/vUserSettings";
+  import vUserDelete from "@/components/vUserDelete";
+  import vAlert from "@/components/vAlert";
+  import vUserHeader from "@/components/vUserHeader";
 
-export default {
-  watchQuery: ["tab"],
-  middleware: "checkAuth",
-  layout: "default",
-  data() {
-    return {
-      alertData: {
-        show: false,
-        type: "",
-        title: "",
-        desc: "",
-      },
-    };
-  },
-  mixins: [getValidURLImageForAvatarMixin],
-  async asyncData({ store, query: { tab, }, params: { id, }, }) {
-    try {
-      const { ok: completeUserById, user: userById } = await store.dispatch("auth/getUser", id);
-      const { ok: completeCurrentUser, user: currentUser, } = await store.dispatch("auth/getUser");
+  export default {
+    name: "ProfilePage",
+    components: {
+      vUserInfo,
+      vUserSettings,
+      vUserDelete,
+      vAlert,
+      vUserHeader,
+    },
+    layout: "default",
+    middleware: "checkAuth",
+    validate({ params, store, }) {
+      const { id, } = params;
 
-      return {
-        user: completeUserById ? userById : {},
-        isCurrentUser: completeCurrentUser ? currentUser.id === userById.id : false,
-        tab,
+      if (!/^\d+$/g.test(id)) {
+        return false;
       }
-    } catch (err) {
-      throw err;
-    }
-  },
-  validate({ params, store }) {
-    const { id } = params;
 
-    if (!/^\d+$/g.test(id)) {
-      return false;
-    }
+      const getCandidate = store.dispatch("user/getOne", id);
 
-    const getCandidate = store.dispatch("auth/getUser", id);
+      return getCandidate
+        .then(({ user, }) => Boolean(Object.keys(user).length))
+        .catch((err) => {
+          throw err;
+        });
+    },
+    async asyncData({ store, query: { tab, }, params: { id, }, }) {
+      try {
+        const { ok: completeUserById, user: userById, } = await store.dispatch("user/getOne", id);
+        const { ok: completeCurrentUser, user: currentUser, } = await store.dispatch("user/getOne");
 
-    return getCandidate
-      .then(({ user }) => Boolean(Object.keys(user).length))
-      .catch((err) => {
+        return {
+          user: completeUserById ? userById : {},
+          isCurrentUser: completeCurrentUser ? currentUser.id === userById.id : false,
+          tab,
+        };
+      } catch (err) {
         throw err;
-      });
-  },
-  mounted() {
-    if (!this.$route.query.tab) {
-      this.$router.push("?tab=info");
-    }
-  },
-  methods: {
-    setAlert(options) {
-      this.alertData = options;
+      }
     },
-    hideAlert() {
-      this.alertData.show = false;
+    data() {
+      return {
+        alertData: {
+          show: false,
+          type: "",
+          title: "",
+          desc: "",
+        },
+      };
     },
-  },
-  components: {
-    vUserInfo,
-    vUserSettings,
-    vUserDelete,
-    vAlert,
-    vUserHeader,
-  },
-};
+    watchQuery: ["tab"],
+    mounted() {
+      if (!this.$route.query.tab) {
+        this.$router.push("?tab=info");
+      }
+    },
+    methods: {
+      setAlert(options) {
+        this.alertData = options;
+      },
+      hideAlert() {
+        this.alertData.show = false;
+      },
+    },
+  };
 </script>

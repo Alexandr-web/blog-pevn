@@ -8,6 +8,6 @@ export default {
       const url = await require(`@/postsImages/${image}`);
 
       return /^\/\_nuxt\//.test(url) ? url : "";
-    }
-  }
-}
+    },
+  },
+};

@@ -1,18 +1,14 @@
-const Cookie = require("cookie");
-
-import host from "../server/host";
 import jsCookie from "js-cookie";
 import jwtDecode from "jwt-decode";
 
+const Cookie = require("cookie");
+const host = require("../server/host");
+
 export default {
   state() {
-    return {
-      token: null
-    }
+    return { token: null, };
   },
-  getters: {
-    getToken: state => state.token
-  },
+  getters: { getToken: (state) => state.token, },
   mutations: {
     setToken(state, val) {
       state.token = val;
@@ -23,7 +19,7 @@ export default {
       state.token = null;
 
       jsCookie.remove("token");
-    }
+    },
   },
   actions: {
     async registration({ }, fd) {
@@ -34,7 +30,7 @@ export default {
             "Content-Type": "application/json",
             "Accept-Type": "application/json",
           },
-          body: JSON.stringify(fd)
+          body: JSON.stringify(fd),
         });
 
         return res.json();
@@ -43,7 +39,7 @@ export default {
       }
     },
 
-    async login({ commit }, fd) {
+    async login({ commit, }, fd) {
       try {
         const res = await fetch(`${host}/auth/login`, {
           method: "POST",
@@ -51,7 +47,7 @@ export default {
             "Content-Type": "application/json",
             "Accept-Type": "application/json",
           },
-          body: JSON.stringify(fd)
+          body: JSON.stringify(fd),
         });
 
         const data = await res.json();
@@ -66,13 +62,13 @@ export default {
       }
     },
 
-    async autoLogin({ commit }) {
+    async autoLogin({ commit, }) {
       try {
         const cookieStr = process.browser ? document.cookie : this.app.context.req.headers.cookie || "";
         const findToken = Cookie.parse(cookieStr);
 
         if (findToken) {
-          const isValidToken = tkn => {
+          const isValidToken = (tkn) => {
             if (!tkn) {
               return false;
             }
@@ -81,46 +77,14 @@ export default {
             const expires = tokenData.exp || 0;
 
             return (new Date().getTime() / 1000) < expires;
-          }
+          };
 
           return isValidToken(findToken.token) ? commit("setToken", findToken.token) : commit("clearToken");
-        } else {
-          return commit("clearToken");
         }
+        return commit("clearToken");
       } catch (err) {
         throw err;
       }
     },
-
-    async getUser({ }, id) {
-      try {
-        const sendReq = async userId => {
-          const res = await fetch(`${host}/auth/user/${userId}`, {
-            method: "GET",
-            headers: {
-              "Accept-Type": "application/json"
-            }
-          });
-
-          return res.json();
-        }
-
-        if (id) {
-          return sendReq(id);
-        } else {
-          const cookieStr = process.browser ? document.cookie : this.app.context.req.headers.cookie || "";
-          const findToken = Cookie.parse(cookieStr);
-          const res = findToken ? jwtDecode(findToken.token) || {} : {};
-          
-          if (Object.keys(res).length) {
-            return sendReq(res.dataValues.id);
-          } else {
-            return {};
-          }
-        }
-      } catch (err) {
-        throw err;
-      }
-    }
-  }
-}
+  },
+};
